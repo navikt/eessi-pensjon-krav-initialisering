@@ -1,6 +1,0 @@
-/Users/moamini/repos/eessi-pensjon-behandle-utland/src/main/kotlin/no/nav/eessi/pensjon/health/DiagnosticsController.kt
-/Users/moamini/repos/eessi-pensjon-behandle-utland/src/main/kotlin/no/nav/eessi/pensjon/EessiPensjonBehandleUtlandApplication.kt
-/Users/moamini/repos/eessi-pensjon-behandle-utland/src/main/kotlin/no/nav/eessi/pensjon/json/Utils.kt
-/Users/moamini/repos/eessi-pensjon-behandle-utland/src/main/kotlin/no/nav/eessi/pensjon/config/KafkaConfig.kt
-/Users/moamini/repos/eessi-pensjon-behandle-utland/src/main/kotlin/no/nav/eessi/pensjon/statistikk/listener/BehandleUtlandListener.kt
-/Users/moamini/repos/eessi-pensjon-behandle-utland/src/main/kotlin/no/nav/eessi/pensjon/config/RestTemplateConfig.kt
