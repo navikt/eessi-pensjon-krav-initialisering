@@ -3,4 +3,4 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
-rootProject.name = 'eessi-pensjon-statistikk'
+rootProject.name = 'eessi-pensjon-behandle-utland'
