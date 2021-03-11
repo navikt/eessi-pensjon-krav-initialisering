@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.statistikk.architecture
+package no.nav.eessi.pensjon.behandleutland.architecture
 
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.core.importer.ImportOption
@@ -30,8 +30,8 @@ class ArchitectureTest {
     @BeforeAll
     fun beforeAll() {
         // Validate number of classes to analyze
-        assertTrue(classesToAnalyze.size > 50, "Sanity check on no. of classes to analyze")
-        assertTrue(classesToAnalyze.size < 800, "Sanity check on no. of classes to analyze")
+        assertTrue(classesToAnalyze.size > 10, "Sanity check on no. of classes to analyze")
+        assertTrue(classesToAnalyze.size < 200, "Sanity check on no. of classes to analyze")
     }
 
     @Test
@@ -48,12 +48,11 @@ class ArchitectureTest {
 
     @Test
     fun `Check architecture`() {
-        val ROOT = "statistikk"
-        val Config = "statistikk.Config"
-        val Health = "statistikk.Health"
-        val Listeners = "statistikk.listener"
-        val JSON = "statistikk.json"
-        val Services = "statistikk.services"
+        val ROOT = "behandleutland"
+        val Config = "behandleutland.Config"
+        val Health = "behandleutland.Health"
+        val Listeners = "behandleutland.listener"
+        val JSON = "behandleutland.json"
         val Integrationtest = "integrationtest"
 
 
@@ -63,8 +62,7 @@ class ArchitectureTest {
             .layer(Config).definedBy("$root.config")
             .layer(Health).definedBy("$root.health")
             .layer(JSON).definedBy("$root.json")
-            .layer(Listeners).definedBy("$root.statistikk.listener")
-            .layer(Services).definedBy("$root.statistikk.services")
+            .layer(Listeners).definedBy("$root.behandleutland.listener")
 /*
             .layer(Integrationtest).definedBy("$root.integrationtest")
 */

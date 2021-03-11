@@ -1,10 +1,11 @@
-package no.nav.eessi.pensjon.statistikk.listener
+package no.nav.eessi.pensjon.behandleutland.listener
 
 import org.slf4j.LoggerFactory
 import no.nav.eessi.pensjon.json.mapJsonToAny
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.json.typeRefs
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.slf4j.MDC
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component

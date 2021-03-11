@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.statistikk.listener;
+package no.nav.eessi.pensjon.behandleutland.listener;
 
 public class PensjonSoknad {
 
