@@ -1,0 +1,67 @@
+{
+  "sedGVer": "4",
+  "nav": {
+    "bruker": {
+      "adresse": {
+        "land": "NO",
+        "gate": "FRANKLINVEIEN 13",
+        "postnummer": "4849",
+        "by": "ARENDAL"
+      },
+      "person": {
+        "fornavn": "DØLL",
+        "pin": [
+          {
+            "land": "NO",
+            "institusjonsid": "NO:NAVAT07",
+            "institusjonsnavn": "NAV ACCEPTANCE TEST 07",
+            "identifikator": "08035325493"
+          }
+        ],
+        "kjoenn": "K",
+        "etternavn": "BAMSE",
+        "foedselsdato": "1953-03-08",
+        "statsborgerskap": [
+          {
+            "land": "NO"
+          }
+        ]
+      }
+    },
+    "ektefelle": {
+      "person": {
+        "pin": [
+          {
+            "institusjonsid": "NO:NAVAT07",
+            "land": "NO",
+            "institusjonsnavn": "NAV ACCEPTANCE TEST 07",
+            "identifikator": "12055322544"
+          }
+        ],
+        "kjoenn": "M",
+        "statsborgerskap": [
+          {
+            "land": "NO"
+          }
+        ],
+        "etternavn": "STAUDE",
+        "fornavn": "KORRUPT",
+        "foedselsdato": "1953-05-12"
+      },
+      "type": "ektefelle"
+    },
+    "eessisak": [
+      {
+        "institusjonsnavn": "NAV ACCEPTANCE TEST 07",
+        "saksnummer": "22929783",
+        "institusjonsid": "NO:NAVAT07",
+        "land": "NO"
+      }
+    ],
+    "krav": {
+      "dato": "2020-05-11"
+    }
+  },
+  "sedVer": "2",
+  "sed": "P2000"
+}

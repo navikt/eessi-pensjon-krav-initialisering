@@ -1,0 +1,56 @@
+
+kafka:
+  statistikk-inn:
+    topic: eessi-pensjon-statistikk-inn
+    groupid: eessi-pensjon-group
+  statistikk-ut:
+    topic: eessi-pensjon-statistikk-ut
+    groupid: eessi-pensjon-group
+  statistikk:
+    topic: eessi-int-test-topic
+  statistikk-sed-sendt:
+    topic: eessi-pensjon-statistikk-sed-sendt
+    groupid: eessi-pensjon-statistikk-group
+
+  statistikk-sed-mottatt:
+    topic: eessi-pensjon-statistikk-sed-mottatt
+    groupid: eessi-pensjon-statistikk-group
+
+eessi_pensjon_statistikk_s3_creds_username: 'dummy'
+eessi_pensjon_statistikk_s3_creds_password: 'dummy'
+
+s3_url: 'http://objectstore.rook-ceph.svc.nais.local'
+s3_region: 'us-east-1'
+s3_fss_url: "http://objectstore.rook-ceph.svc.nais.local"
+
+spring:
+  kafka:
+    listener:
+      ack-mode: manual
+    consumer:
+      enable-auto-commit: false
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
+    properties:
+      security.protocol: plaintext
+  main:
+    allow-bean-definition-overriding: true
+
+securitytokenservice:
+  discoveryurl: http://localhost:${mockserverport}/.well-known/openid-configuration
+
+nais_app_name: eessi-pensjon-journalforing
+eux_rina_api_v1_url: http://localhost:${mockserverport}
+securitytokenservice.url: http://someurl
+srvusername: someuser
+srvpassword: somepass
+oppgave.oppgaver.url: http://localhost:${mockserverport}
+journalpost_v1_url: http://localhost:${mockserverport}
+aktoerregister.api.v1.url: http://localhost:${mockserverport}
+virksomhet.person.v3:
+  endpointurl: http://localhost:${mockserverport}
+eessi_pensjon_fagmodul_url: http://localhost:${mockserverport}
+norg2_url: http://localhost:${mockserverport}
+bestemsak_url: http://localhost:${mockserverport}
+pensjonsinformasjon:
+  url: 'http://example.com:8099'
+PDL_URL: http://localhost:${mockserverport}

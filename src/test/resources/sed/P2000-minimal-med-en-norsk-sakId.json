@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "eessisak": [
+      {
+        "land": "NO",
+        "saksnummer": "123456"
+      }
+    ],
+    "bruker": {
+      "person": {
+        "kjoenn": "K",
+        "etternavn": "sdf",
+        "fornavn": "sdf",
+        "foedselsdato": "1999-08-05"
+      }
+    },
+    "krav": {
+      "dato": "2006-12-15"
+    }
+  },
+  "sed": "P2000",
+  "sedGVer": "4",
+  "sedVer": "2"
+}

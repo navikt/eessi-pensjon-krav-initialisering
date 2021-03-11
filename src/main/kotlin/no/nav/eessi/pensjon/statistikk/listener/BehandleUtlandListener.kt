@@ -1,0 +1,52 @@
+package no.nav.eessi.pensjon.statistikk.listener
+
+import org.slf4j.LoggerFactory
+import no.nav.eessi.pensjon.json.mapJsonToAny
+import no.nav.eessi.pensjon.json.toJson
+import no.nav.eessi.pensjon.json.typeRefs
+import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.kafka.support.Acknowledgment
+import org.springframework.stereotype.Component
+import java.util.*
+import java.util.concurrent.CountDownLatch
+
+@Component
+class BehandleUtlandListener {
+
+    private val logger = LoggerFactory.getLogger(BehandleUtlandListener::class.java)
+
+    private val latch = CountDownLatch(1)
+
+    fun getLatch() = latch
+
+    @KafkaListener(
+        id = "behandleUtlandListener",
+        idIsGroup = false,
+        topics = ["\${behandleUtland.topic}"],
+        groupId = "\${behandleUtland.groupid}",
+        autoStartup = "false"
+    )
+    fun consumeOpprettelseMelding(
+        hendelse: String,
+        cr: ConsumerRecord<String, String>,
+        acknowledgment: Acknowledgment
+    ) {
+        MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
+            logger.info("Innkommet hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
+
+            try {
+                logger.debug("Hendelse : ${hendelse.toJson()}")
+                val melding = mapJsonToAny(hendelse, typeRefs<PensjonSoknad>())
+
+                acknowledgment.acknowledge()
+                logger.info("Acket melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
+            } catch (ex: Exception) {
+                logger.error("Noe gikk galt under behandling av hendelse:\n $hendelse \n", ex)
+                throw RuntimeException(ex.message)
+            }
+            latch.countDown()
+        }
+    }
+}
+
