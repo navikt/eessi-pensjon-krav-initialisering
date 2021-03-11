@@ -1,12 +1,12 @@
 ![](https://github.com/navikt/eessi-pensjon-statistikk/workflows/Bygg%20og%20deploy%20Q2/badge.svg)
 ![](https://github.com/navikt/eessi-pensjon-statistikk/workflows/Manuell%20deploy/badge.svg)
 
-# eessi-pensjon-statistikk
-Opprette statistikk
+# eessi-pensjon-behandleutland
+Opprette behandleutland
 
 # Utvikling
 
-Kjør med java 1.8
+Kjør med java 11.05 minimum
 
 ## Komme i gang
 
