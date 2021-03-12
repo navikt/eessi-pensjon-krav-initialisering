@@ -52,4 +52,4 @@ spec:
     enabled: true
     paths:
       - kvPath: {{serviceuserkv}}
-        mountPath: /var/run/secrets/nais.io/srveessipensjonbeh
+        mountPath: /var/run/secrets/nais.io/srveessipensjonkrav

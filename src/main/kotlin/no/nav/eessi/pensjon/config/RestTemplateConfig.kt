@@ -13,24 +13,24 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 
-@Configuration
-class RestTemplateConfig(private val securityTokenExchangeService: STSService) {
-
-    @Value("\${eux_rina_api_v1_url}")
-    lateinit var euxUrl: String
-
-    @Bean
-    fun euxOidcRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
-        return templateBuilder
-            .rootUri(euxUrl)
-            .errorHandler(DefaultResponseErrorHandler())
-            .additionalInterceptors(
-                RequestIdHeaderInterceptor(),
-                UsernameToOidcInterceptor(securityTokenExchangeService),
-                RequestResponseLoggerInterceptor())
-        .build().apply {
-                requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
-            }
-    }
-
-}
+//@Configuration
+//class RestTemplateConfig(private val securityTokenExchangeService: STSService) {
+//
+//    @Value("\${eux_rina_api_v1_url}")
+//    lateinit var euxUrl: String
+//
+//    @Bean
+//    fun euxOidcRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
+//        return templateBuilder
+//            .rootUri(euxUrl)
+//            .errorHandler(DefaultResponseErrorHandler())
+//            .additionalInterceptors(
+//                RequestIdHeaderInterceptor(),
+//                UsernameToOidcInterceptor(securityTokenExchangeService),
+//                RequestResponseLoggerInterceptor())
+//        .build().apply {
+//                requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
+//            }
+//    }
+//
+//}
