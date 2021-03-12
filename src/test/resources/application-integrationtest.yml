@@ -1,13 +1,8 @@
 
 kafka:
-  statistikk-inn:
-    topic: eessi-pensjon-statistikk-inn
-    groupid: eessi-pensjon-group
-  statistikk-ut:
-    topic: eessi-pensjon-statistikk-ut
-    groupid: eessi-pensjon-group
-  statistikk:
-    topic: eessi-int-test-topic
+  krav.initialisering:
+    topic: eessi-pensjon-krav-initialisering
+    groupid: eessi-pensjon-krav-initialisering-group
 
 eessi_pensjon_statistikk_s3_creds_username: 'dummy'
 eessi_pensjon_statistikk_s3_creds_password: 'dummy'

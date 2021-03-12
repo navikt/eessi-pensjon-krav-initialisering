@@ -38,7 +38,6 @@ class Listener {
 
             try {
                 logger.debug("Hendelse : ${hendelse.toJson()}")
-                val melding = mapJsonToAny(hendelse, typeRefs<PensjonSoknad>())
 
                 acknowledgment.acknowledge()
                 logger.info("Acket melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
