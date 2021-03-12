@@ -1,8 +1,8 @@
 ![](https://github.com/navikt/eessi-pensjon-statistikk/workflows/Bygg%20og%20deploy%20Q2/badge.svg)
 ![](https://github.com/navikt/eessi-pensjon-statistikk/workflows/Manuell%20deploy/badge.svg)
 
-# eessi-pensjon-behandleutland
-Opprette behandleutland
+# eessi-pensjon-krav-initialisering
+Opprette krav-initialisering
 
 # Utvikling
 

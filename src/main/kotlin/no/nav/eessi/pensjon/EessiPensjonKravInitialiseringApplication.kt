@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class EessiPensjonBehandleUtlandApplication
+class EessiPensjonKravInitialiseringApplication
 
 fun main(args: Array<String>) {
-	runApplication<EessiPensjonBehandleUtlandApplication>(*args)
+	runApplication<EessiPensjonKravInitialiseringApplication>(*args)
 }

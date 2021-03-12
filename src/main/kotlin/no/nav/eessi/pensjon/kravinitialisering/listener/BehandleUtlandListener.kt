@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.behandleutland.listener
+package no.nav.eessi.pensjon.kravinitialisering.listener
 
 import org.slf4j.LoggerFactory
 import no.nav.eessi.pensjon.json.mapJsonToAny
