@@ -24,8 +24,8 @@ class Listener {
     @KafkaListener(
         id = "kravInitialiseringListener",
         idIsGroup = false,
-        topics = ["\${behandleUtland.topic}"],
-        groupId = "\${behandleUtland.groupid}",
+        topics = ["\${kafka.krav.initialisering.topic}"],
+        groupId = "\${kafka.krav.initialisering.groupid}",
         autoStartup = "false"
     )
     fun consumeOpprettelseMelding(

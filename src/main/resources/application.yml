@@ -19,13 +19,9 @@ securityTokenService:
   discoveryUrl: ${SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL}
 
 kafka:
-  statistikk-inn:
-    topic: ${KAFKA_STATISTIKK_TOPICNAME_INN}
-    groupid: eessi-pensjon-statistikk-group
-
-  statistikk-ut:
-    topic: ${KAFKA_STATISTIKK_TOPICNAME_UT}
-    groupid: eessi-pensjon-statistikk-group
+  krav.initialisering:
+    topic: ${KRAV_INITIALISERING_TOPIC}
+    groupid: eessi-pensjon-krav-initialisering-group
 
 #Metrics
 management:
