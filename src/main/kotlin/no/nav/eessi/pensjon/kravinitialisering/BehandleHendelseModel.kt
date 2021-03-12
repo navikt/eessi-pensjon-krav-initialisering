@@ -1,8 +1,8 @@
 package no.nav.eessi.pensjon.kravinitialisering
 
 data class BehandleHendelseModel(
-    var sakId: String,
-    var bucId: String,
+    var sakId: String? = null,
+    var bucId: String? = null,
     var hendelsesKode: HendelseKode,
     var beskrivelse: String? = null
 )

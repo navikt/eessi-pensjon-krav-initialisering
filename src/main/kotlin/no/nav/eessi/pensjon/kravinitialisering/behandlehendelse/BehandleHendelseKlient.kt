@@ -29,36 +29,12 @@ class BehandleHendelseKlient(private val penBehandleHendelseOidcRestTemplate: Re
          opprettBehandleHendelse(
              BehandleHendelseModel(
              "22929983",
-             "1286518",
+                 "",
              HendelseKode.SOKNAD_OM_UFORE,
             "22929983 - UFØRETRYGD PBUC03 CP 1286518"
              )
          )
      }
-
-//    fun opprettJournalpost(request: OpprettJournalpostRequest, forsokFerdigstill: Boolean): OpprettJournalPostResponse? {
-//        val path = "/journalpost?forsoekFerdigstill=$forsokFerdigstill"
-//        return opprettjournalpost.measure {
-//            return@measure try {
-//                logger.info("Kaller Joark for å generere en journalpost: $path")
-//                val headers = HttpHeaders()
-//                headers.contentType = MediaType.APPLICATION_JSON
-//                val response = journalpostOidcRestTemplate.exchange(
-//                    path,
-//                    HttpMethod.POST,
-//                    HttpEntity(request.toString(), headers),
-//                    String::class.java)
-//                mapper.readValue(response.body, OpprettJournalPostResponse::class.java)
-//            } catch (ex: HttpStatusCodeException) {
-//                logger.error("En feil oppstod under opprettelse av journalpost ex: ", ex)
-//                throw RuntimeException("En feil oppstod under opprettelse av journalpost ex: ${ex.message} body: ${ex.responseBodyAsString}")
-//            } catch (ex: Exception) {
-//                logger.error("En feil oppstod under opprettelse av journalpost ex: ", ex)
-//                throw RuntimeException("En feil oppstod under opprettelse av journalpost ex: ${ex.message}")
-//            }
-//        }
-//    }
-//
 
     fun opprettBehandleHendelse(model: BehandleHendelseModel) {
         behandlehendelse.measure {
