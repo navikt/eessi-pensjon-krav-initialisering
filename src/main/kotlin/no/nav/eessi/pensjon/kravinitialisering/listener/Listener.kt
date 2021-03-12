@@ -13,16 +13,16 @@ import java.util.*
 import java.util.concurrent.CountDownLatch
 
 @Component
-class BehandleUtlandListener {
+class Listener {
 
-    private val logger = LoggerFactory.getLogger(BehandleUtlandListener::class.java)
+    private val logger = LoggerFactory.getLogger(Listener::class.java)
 
     private val latch = CountDownLatch(1)
 
     fun getLatch() = latch
 
     @KafkaListener(
-        id = "behandleUtlandListener",
+        id = "kravInitialiseringListener",
         idIsGroup = false,
         topics = ["\${behandleUtland.topic}"],
         groupId = "\${behandleUtland.groupid}",

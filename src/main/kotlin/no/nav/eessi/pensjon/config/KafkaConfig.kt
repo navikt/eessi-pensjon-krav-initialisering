@@ -15,9 +15,9 @@ class KafkaConfig {
     @Bean
     fun sedSendtAuthRetry(registry: KafkaListenerEndpointRegistry): ApplicationRunner? {
         return ApplicationRunner {
-            val behandleUtlandListener = registry.getListenerContainer("behandleUtlandListener")
-            behandleUtlandListener.containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(4L)
-            behandleUtlandListener.start()
+            val kravInitialiseringListener = registry.getListenerContainer("kravInitialiseringListener")
+            kravInitialiseringListener.containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(4L)
+            kravInitialiseringListener.start()
 
               }
     }

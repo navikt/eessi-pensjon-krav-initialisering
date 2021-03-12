@@ -27,20 +27,6 @@ kafka:
     topic: ${KAFKA_STATISTIKK_TOPICNAME_UT}
     groupid: eessi-pensjon-statistikk-group
 
-  statistikk-sed-sendt:
-    topic: ${KAFKA_SEDSENDT_TOPIC}
-    groupid: eessi-pensjon-statistikk-group
-
-  statistikk-sed-mottatt:
-    topic: ${KAFKA_SEDMOTTATT_TOPIC}
-    groupid: eessi-pensjon-statistikk-group
-
-eessi.pensjon.statistikk:
-  s3:
-    bucket.name: 'eessipensjon-statistikk'
-
-s3_region: us-east-1
-
 #Metrics
 management:
   metrics:
