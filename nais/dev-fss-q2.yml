@@ -1,7 +1,7 @@
 kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
-  name: eessi-pensjon-behandle-utland
+  name: eessi-pensjon-krav-initialisering
   namespace: q2
   labels:
     team: eessipensjon
@@ -24,7 +24,7 @@ spec:
 
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-behandle-utland.nais.preprod.local
+    - https://eessi-pensjon-krav-initialisering.nais.preprod.local
   liveness:
     path: /internal/isalive
     port: 8080
