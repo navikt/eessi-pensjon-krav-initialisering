@@ -36,6 +36,8 @@ virksomhet.person.v3:
 eessi_pensjon_fagmodul_url: http://localhost:${mockserverport}
 norg2_url: http://localhost:${mockserverport}
 bestemsak_url: http://localhost:${mockserverport}
+
 pensjonsinformasjon:
   url: 'http://example.com:8099'
-PDL_URL: http://localhost:${mockserverport}
+
+BEHANDLEHENDELSE_URL: http://localhost:${mockserverport}

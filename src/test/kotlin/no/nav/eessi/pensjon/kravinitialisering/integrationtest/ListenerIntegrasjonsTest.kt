@@ -1,15 +1,23 @@
 package no.nav.eessi.pensjon.behandleutland.listener.architecture.integrationtest
 
+import no.nav.eessi.pensjon.json.toJson
+import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
+import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
 import no.nav.eessi.pensjon.security.sts.STSService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
+import org.mockserver.model.Header
+import org.mockserver.model.HttpRequest
+import org.mockserver.model.HttpResponse
+import org.mockserver.model.HttpStatusCode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.HttpMethod
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
@@ -23,6 +31,8 @@ import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -74,14 +84,21 @@ class ListenerIntegrasjonsTest {
     @Test
     fun `En buc-hendelse skal sendes videre til riktig kanal  `() {
 
-        sendMelding("Test").let {
+        val mockmodel = BehandleHendelseModel(
+            sakId = "123123123",
+            bucId = "1231231",
+            hendelsesKode = HendelseKode.SOKNAD_OM_UFORE,
+            "Test på beskrivelsen også"
+        )
+
+        sendMelding(mockmodel).let {
             listener.getLatch().await(15000, TimeUnit.MILLISECONDS)
         }
         //verify(exactly = 1) { statistikkPublisher.publiserBucOpprettetStatistikk(any()) }
     }
 
-    private fun sendMelding(melding: String) {
-        sedMottattProducerTemplate.sendDefault(melding)
+    private fun sendMelding(melding: BehandleHendelseModel) {
+        sedMottattProducerTemplate.sendDefault(melding.toJson())
     }
 
     private fun shutdown(container: KafkaMessageListenerContainer<String, String>) {
@@ -116,36 +133,36 @@ class ListenerIntegrasjonsTest {
 
     companion object {
 
-//        init {
-//            // Start Mockserver in memory
-//            val port = randomFrom()
-//            mockServer = ClientAndServer.startClientAndServer(port)
-//            System.setProperty("mockServerport", port.toString())
-//            // Mocker STS
-//            mockServer.`when`(
-//                HttpRequest.request()
-//                    .withMethod(HttpMethod.GET.name)
-//                    .withQueryStringParameter("grant_type", "client_credentials")
-//            )
-//                .respond(
-//                    HttpResponse.response()
-//                        .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
-//                        .withStatusCode(HttpStatusCode.OK_200.code())
-//                        .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/STStoken.json"))))
-//                )
-//
-//            mockServer.`when`(
-//                HttpRequest.request()
-//                    .withMethod(HttpMethod.GET.name)
-//                    .withPath("/buc/123")
-//            )
-//                .respond(
-//                    HttpResponse.response()
-//                        .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
-//                        .withStatusCode(HttpStatusCode.OK_200.code())
-//                        .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/buc/bucMedP2000.json"))))
-//                )
-//        }
+        init {
+            // Start Mockserver in memory
+            val port = randomFrom()
+            mockServer = ClientAndServer.startClientAndServer(port)
+            System.setProperty("mockServerport", port.toString())
+            // Mocker STS
+            mockServer.`when`(
+                HttpRequest.request()
+                    .withMethod(HttpMethod.GET.name)
+                    .withQueryStringParameter("grant_type", "client_credentials")
+            )
+                .respond(
+                    HttpResponse.response()
+                        .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
+                        .withStatusCode(HttpStatusCode.OK_200.code())
+                        .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/STStoken.json"))))
+                )
+
+            mockServer.`when`(
+                HttpRequest.request()
+                    .withMethod(HttpMethod.POST.name)
+                    .withPath("/")
+            )
+                .respond(
+                    HttpResponse.response()
+                        .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
+                        .withStatusCode(HttpStatusCode.OK_200.code())
+                        .withBody("{}")
+                )
+        }
 
 
         private fun randomFrom(from: Int = 1024, to: Int = 65535): Int {

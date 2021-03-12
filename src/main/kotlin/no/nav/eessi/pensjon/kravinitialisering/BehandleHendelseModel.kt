@@ -1,46 +1,15 @@
-package no.nav.eessi.pensjon.kravinitialisering.listener;
+package no.nav.eessi.pensjon.kravinitialisering
 
-public class PensjonSoknad {
+data class BehandleHendelseModel(
+    var sakId: String,
+    var bucId: String,
+    var hendelsesKode: HendelseKode,
+    var beskrivelse: String? = null
+)
 
-    private String sakId;
-    private String beskrivelse;
-    private String bucId;
-    private String hendelsesKode;
-
-    public String getSakId() {
-        return sakId;
-    }
-
-    public String getBeskrivelse() {
-        return beskrivelse;
-    }
-
-    public String getBucId() {
-        return bucId;
-    }
-
-    public String getHendelsesKode() {
-        return hendelsesKode;
-    }
-
-    public void setSakId(String sakId) {
-        this.sakId = sakId;
-    }
-
-    public void setBeskrivelse(String beskrivelse) {
-        this.beskrivelse = beskrivelse;
-    }
-
-    public void setBucId(String bucId) {
-        this.bucId = bucId;
-    }
-
-    public void setHendelsesKode(String hendelsesKode) {
-        this.hendelsesKode = hendelsesKode;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("PensjonSoknad{sakId='%s', beskrivelse='%s', bucId='%s', hendelsescode='%s'}", sakId, beskrivelse, bucId, hendelsesKode);
-    }
+enum class HendelseKode {
+    SOKNAD_OM_ALDERSPENSJON,
+    SOKNAD_OM_UFORE,
+    INFORMASJON_FRA_UTLANDET,
+    UKJENT
 }

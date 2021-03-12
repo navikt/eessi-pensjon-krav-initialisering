@@ -4,6 +4,8 @@ import org.slf4j.LoggerFactory
 import no.nav.eessi.pensjon.json.mapJsonToAny
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.json.typeRefs
+import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
+import no.nav.eessi.pensjon.kravinitialisering.behandlehendelse.BehandleHendelseKlient
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.MDC
 import org.springframework.kafka.annotation.KafkaListener
@@ -13,7 +15,7 @@ import java.util.*
 import java.util.concurrent.CountDownLatch
 
 @Component
-class Listener {
+class Listener(private val behandleHendelse: BehandleHendelseKlient) {
 
     private val logger = LoggerFactory.getLogger(Listener::class.java)
 
@@ -38,6 +40,10 @@ class Listener {
 
             try {
                 logger.debug("Hendelse : ${hendelse.toJson()}")
+
+                val model: BehandleHendelseModel = mapJsonToAny(hendelse, typeRefs())
+
+                behandleHendelse.opprettBehandleHendelse(model)
 
                 acknowledgment.acknowledge()
                 logger.info("Acket melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
