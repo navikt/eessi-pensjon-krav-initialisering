@@ -47,10 +47,10 @@ class Listener(private val behandleHendelse: BehandleHendelseKlient) {
                 //status
                 //hendelse
 
-
                 val model: BehandleHendelseModel = mapJsonToAny(hendelse, typeRefs())
                 if (model.hendelsesKode == HendelseKode.SOKNAD_OM_UFORE) {
-                    behandleHendelse.opprettBehandleHendelse(model)
+                    val fullmodel = if (model.beskrivelse == null) { model.copy(beskrivelse = "Søknad om uføre: sakId: ${model.sakId}") } else model
+                    behandleHendelse.opprettBehandleHendelse(fullmodel)
                 }
 
                 acknowledgment.acknowledge()
