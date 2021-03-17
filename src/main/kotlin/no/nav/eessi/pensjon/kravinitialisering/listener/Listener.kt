@@ -5,6 +5,7 @@ import no.nav.eessi.pensjon.json.mapJsonToAny
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.json.typeRefs
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
+import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.behandlehendelse.BehandleHendelseKlient
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.MDC
@@ -41,9 +42,16 @@ class Listener(private val behandleHendelse: BehandleHendelseKlient) {
             try {
                 logger.debug("Hendelse : ${hendelse.toJson()}")
 
-                val model: BehandleHendelseModel = mapJsonToAny(hendelse, typeRefs())
+                //bucid
+                //sedtype
+                //status
+                //hendelse
 
-                behandleHendelse.opprettBehandleHendelse(model)
+
+                val model: BehandleHendelseModel = mapJsonToAny(hendelse, typeRefs())
+                if (model.hendelsesKode == HendelseKode.SOKNAD_OM_UFORE) {
+                    behandleHendelse.opprettBehandleHendelse(model)
+                }
 
                 acknowledgment.acknowledge()
                 logger.info("Acket melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
