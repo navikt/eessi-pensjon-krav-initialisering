@@ -171,13 +171,4 @@ class ListenerIntegrasjonsTest {
         }
     }
 
-    @TestConfiguration
-    class TestConfig {
-
-//        @Bean
-//        fun statistikkPublisher(): StatistikkPublisher {
-//            return spyk(StatistikkPublisher(mockk(relaxed = true), "bogusTopic"))
-//        }
-    }
-
 }

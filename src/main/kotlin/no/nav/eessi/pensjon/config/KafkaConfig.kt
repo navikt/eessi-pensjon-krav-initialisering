@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry
 import org.springframework.kafka.core.ConsumerFactory
+import org.springframework.retry.backoff.FixedBackOffPolicy
+import org.springframework.retry.policy.SimpleRetryPolicy
+import org.springframework.retry.support.RetryTemplate
 import java.time.Duration
 
 @Configuration
@@ -30,6 +33,21 @@ class KafkaConfig {
         configurer.configure(factory, kafkaConsumerFactory)
      //   factory.setErrorHandler(kafkaErrorHandler)
         return factory
+    }
+
+    @Bean
+    fun retryTemplate(): RetryTemplate {
+        val retryTemplate = RetryTemplate()
+
+        val fixedBackOffPolicy = FixedBackOffPolicy()
+        fixedBackOffPolicy.backOffPeriod = 1000
+        retryTemplate.setBackOffPolicy(fixedBackOffPolicy)
+
+        val retryPolicy = SimpleRetryPolicy()
+        retryPolicy.maxAttempts = 1
+        retryTemplate.setRetryPolicy(retryPolicy)
+
+        return retryTemplate
     }
 
 /*    @Bean
