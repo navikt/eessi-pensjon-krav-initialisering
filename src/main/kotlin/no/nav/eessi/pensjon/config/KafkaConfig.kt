@@ -14,9 +14,11 @@ import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.listener.ContainerAwareErrorHandler
 import org.springframework.kafka.listener.ContainerStoppingErrorHandler
 import org.springframework.kafka.listener.MessageListenerContainer
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler
 import org.springframework.retry.backoff.FixedBackOffPolicy
 import org.springframework.retry.policy.SimpleRetryPolicy
 import org.springframework.retry.support.RetryTemplate
+import org.springframework.util.backoff.FixedBackOff
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.time.Duration
@@ -40,6 +42,7 @@ class KafkaConfig {
         factory.setRetryTemplate(retryTemplate())
         configurer.configure(factory, kafkaConsumerFactory)
         //factory.setErrorHandler(KafkaCustomErrorHandlerBean())
+        factory.setErrorHandler(SeekToCurrentErrorHandler(FixedBackOff(1,1)))
         return factory
     }
 
