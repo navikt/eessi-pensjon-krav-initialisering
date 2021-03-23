@@ -42,7 +42,7 @@ class KafkaConfig {
         factory.setRetryTemplate(retryTemplate())
         configurer.configure(factory, kafkaConsumerFactory)
         //factory.setErrorHandler(KafkaCustomErrorHandlerBean())
-        factory.setErrorHandler(SeekToCurrentErrorHandler(FixedBackOff(1,1)))
+        factory.setErrorHandler(SeekToCurrentErrorHandler(FixedBackOff(1,-1)))
         return factory
     }
 
