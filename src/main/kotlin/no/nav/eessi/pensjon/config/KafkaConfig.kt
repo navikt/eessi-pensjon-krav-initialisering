@@ -14,6 +14,7 @@ import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.listener.ContainerAwareErrorHandler
 import org.springframework.kafka.listener.ContainerStoppingErrorHandler
 import org.springframework.kafka.listener.MessageListenerContainer
+import org.springframework.retry.annotation.EnableRetry
 import org.springframework.retry.backoff.FixedBackOffPolicy
 import org.springframework.retry.policy.SimpleRetryPolicy
 import org.springframework.retry.support.RetryTemplate
@@ -21,6 +22,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.time.Duration
 
+@EnableRetry
 @Configuration
 class KafkaConfig {
 
