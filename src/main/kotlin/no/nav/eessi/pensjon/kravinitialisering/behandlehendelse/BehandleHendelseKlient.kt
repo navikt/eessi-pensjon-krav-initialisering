@@ -26,21 +26,12 @@ class BehandleHendelseKlient(private val penBehandleHendelseOidcRestTemplate: Re
      @PostConstruct
      fun initMetrics() {
          behandlehendelse = metricsHelper.init("Behandlehendelse")
-//         opprettBehandleHendelse(
-//             BehandleHendelseModel(
-//             "22929983",
-//                 "1286518",
-//             HendelseKode.SOKNAD_OM_UFORE,
-//            "22929983 - UFØRETRYGD PBUC03 CP 1286518"
-//             )
-//         )
      }
 
     fun opprettBehandleHendelse(model: BehandleHendelseModel) {
         behandlehendelse.measure {
 
             try {
-
                 val urlpath = "/"
                 val headers = HttpHeaders()
                 headers.contentType = MediaType.APPLICATION_JSON

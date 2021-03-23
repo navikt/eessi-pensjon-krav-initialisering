@@ -1,15 +1,24 @@
 package no.nav.eessi.pensjon.config
 
+import org.apache.kafka.clients.consumer.Consumer
+import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry
 import org.springframework.kafka.core.ConsumerFactory
+import org.springframework.kafka.listener.ContainerAwareErrorHandler
+import org.springframework.kafka.listener.ContainerStoppingErrorHandler
+import org.springframework.kafka.listener.MessageListenerContainer
 import org.springframework.retry.backoff.FixedBackOffPolicy
 import org.springframework.retry.policy.SimpleRetryPolicy
 import org.springframework.retry.support.RetryTemplate
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.time.Duration
 
 @Configuration
@@ -21,17 +30,16 @@ class KafkaConfig {
             val kravInitialiseringListener = registry.getListenerContainer("kravInitialiseringListener")
             kravInitialiseringListener.containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(4L)
             kravInitialiseringListener.start()
-
-              }
+          }
     }
 
     @Bean
     fun kafkaListenerContainerFactory(configurer: ConcurrentKafkaListenerContainerFactoryConfigurer,
                                       kafkaConsumerFactory: ConsumerFactory<Any, Any>): ConcurrentKafkaListenerContainerFactory<*, *>  {
-
         val factory = ConcurrentKafkaListenerContainerFactory<Any, Any>()
+        factory.setRetryTemplate(retryTemplate())
         configurer.configure(factory, kafkaConsumerFactory)
-     //   factory.setErrorHandler(kafkaErrorHandler)
+        factory.setErrorHandler(KafkaCustomErrorHandlerBean())
         return factory
     }
 
@@ -50,7 +58,8 @@ class KafkaConfig {
         return retryTemplate
     }
 
-/*    @Bean
+    @Profile("prod")
+    @Bean
     fun KafkaCustomErrorHandlerBean() : KafkaCustomErrorHandler{
         return KafkaCustomErrorHandler()
     }
@@ -81,5 +90,6 @@ class KafkaConfig {
             }
             return meldinger
         }
-    }*/
+    }
+
 }
