@@ -34,12 +34,12 @@ class KafkaConfig {
     }
 
     @Bean
-    fun kafkaListenerContainerFactory(configurer: ConcurrentKafkaListenerContainerFactoryConfigurer,
+    fun kafkaListenerContainerFactory(retryTemplate: RetryTemplate, configurer: ConcurrentKafkaListenerContainerFactoryConfigurer,
                                       kafkaConsumerFactory: ConsumerFactory<Any, Any>): ConcurrentKafkaListenerContainerFactory<*, *>  {
         val factory = ConcurrentKafkaListenerContainerFactory<Any, Any>()
-        factory.setRetryTemplate(retryTemplate())
+        factory.setRetryTemplate(retryTemplate)
         configurer.configure(factory, kafkaConsumerFactory)
-        factory.setErrorHandler(KafkaCustomErrorHandlerBean())
+        //factory.setErrorHandler(KafkaCustomErrorHandlerBean())
         return factory
     }
 

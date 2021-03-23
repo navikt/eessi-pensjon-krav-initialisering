@@ -82,7 +82,7 @@ class ListenerIntegrasjonsTest {
     }
 
     @Test
-    fun `En buc-hendelse skal sendes videre til riktig kanal  `() {
+    fun `En hendelse skal initalisere et krav`() {
 
         val mockmodel = BehandleHendelseModel(
             sakId = "123123123",
