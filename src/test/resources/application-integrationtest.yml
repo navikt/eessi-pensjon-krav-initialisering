@@ -4,9 +4,12 @@ kafka:
     topic: eessi-pensjon-krav-initialisering
     groupid: eessi-pensjon-krav-initialisering-group
 
-eessi_pensjon_statistikk_s3_creds_username: 'dummy'
-eessi_pensjon_statistikk_s3_creds_password: 'dummy'
+eessi_pensjon_krav_s3_creds_username: 'dummy'
+eessi_pensjon_krav_s3_creds_password: 'dummy'
 
+s3_url: 'http://objectstore.rook-ceph.svc.nais.local'
+s3_region: 'us-east-1'
+s3_fss_url: "http://objectstore.rook-ceph.svc.nais.local"
 
 spring:
   kafka:

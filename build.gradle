@@ -69,6 +69,10 @@ dependencies {
     }
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
+    //aws and s3
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.11.942'
+    testImplementation("io.findify:s3mock_2.12:0.2.5")
+
     //mock - test
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.1")
