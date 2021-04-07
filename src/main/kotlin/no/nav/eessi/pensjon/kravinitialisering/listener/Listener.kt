@@ -7,6 +7,7 @@ import no.nav.eessi.pensjon.json.typeRefs
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.behandlehendelse.BehandleHendelseKlient
+import no.nav.eessi.pensjon.kravinitialisering.services.LagringsService
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.MDC
 import org.springframework.kafka.annotation.KafkaListener
@@ -16,7 +17,7 @@ import java.util.*
 import java.util.concurrent.CountDownLatch
 
 @Component
-class Listener(private val behandleHendelse: BehandleHendelseKlient) {
+class Listener(private val behandleHendelse: BehandleHendelseKlient, private val lagringsService: LagringsService) {
 
     private val logger = LoggerFactory.getLogger(Listener::class.java)
 
@@ -41,10 +42,17 @@ class Listener(private val behandleHendelse: BehandleHendelseKlient) {
 
             try {
                 logger.debug("Hendelse : ${hendelse.toJson()}")
-
                 val model: BehandleHendelseModel = mapJsonToAny(hendelse, typeRefs())
-                if (model.hendelsesKode == HendelseKode.SOKNAD_OM_UFORE) {
-                    behandleHendelse.opprettBehandleHendelse(model)
+
+                if (lagringsService.hentHendelse(model) == null) {
+                    //støtter kun P2200 for øyeblikket!
+                    logger.debug("Hendelse finnes ikke fra før. Oppretter krav bucid: ${model.bucId} saknr: ${model.sakId}")
+                    if (model.hendelsesKode == HendelseKode.SOKNAD_OM_UFORE) {
+                        behandleHendelse.opprettBehandleHendelse(model)
+                        lagringsService.lagreHendelse(model)
+                    }
+                } else {
+                    logger.debug("Hendelse finnes og krav er opprettet bucid: ${model.bucId} saknr: ${model.sakId}")
                 }
 
                 acknowledgment.acknowledge()

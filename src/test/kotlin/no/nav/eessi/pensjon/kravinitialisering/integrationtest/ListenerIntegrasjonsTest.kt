@@ -1,13 +1,26 @@
 package no.nav.eessi.pensjon.behandleutland.listener.architecture.integrationtest
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider
+import com.amazonaws.auth.AnonymousAWSCredentials
+import com.amazonaws.client.builder.AwsClientBuilder
+import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.AmazonS3ClientBuilder
+import io.findify.s3mock.S3Mock
+import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.mockk
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
+import no.nav.eessi.pensjon.kravinitialisering.behandlehendelse.BehandleHendelseKlient
 import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
+import no.nav.eessi.pensjon.kravinitialisering.services.LagringsService
+import no.nav.eessi.pensjon.s3.S3StorageService
 import no.nav.eessi.pensjon.security.sts.STSService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.InjectMocks
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.Header
 import org.mockserver.model.HttpRequest
@@ -17,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
@@ -31,6 +46,7 @@ import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
+import java.net.ServerSocket
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
@@ -68,11 +84,13 @@ class ListenerIntegrasjonsTest {
 
     @BeforeEach
     fun setup() {
+
         container = settOppUtitlityConsumer(KRAV_INITIALISERING_TOPIC)
         container.start()
         ContainerTestUtils.waitForAssignment(container, embeddedKafka.partitionsPerTopic)
 
         sedMottattProducerTemplate = settOppProducerTemplate()
+
     }
 
     @AfterEach
@@ -170,5 +188,44 @@ class ListenerIntegrasjonsTest {
             return random.nextInt(to - from) + from
         }
     }
+
+/*    // Mocks PDL-PersonService and EuxService
+    @Suppress("unused")
+    @Profile("integrationtest")
+    @TestConfiguration
+    class TestConfig {
+
+        lateinit var storageService: S3StorageService
+        private lateinit var s3MockClient: AmazonS3
+        private lateinit var s3api: S3Mock
+
+        @Bean
+        fun lagringsService(): LagringsService{
+            return LagringsService(initS3())
+        }
+
+        fun initS3() :  S3StorageService {
+
+            val s3Port = ServerSocket(0).use { it.localPort }
+
+            s3api = S3Mock.Builder().withPort(s3Port).withInMemoryBackend().build()
+            s3api.start()
+            val endpoint = AwsClientBuilder.EndpointConfiguration("http://localhost:$s3Port", "us-east-1")
+
+            s3MockClient = AmazonS3ClientBuilder.standard()
+                .withPathStyleAccessEnabled(true)
+                .withCredentials(AWSStaticCredentialsProvider(AnonymousAWSCredentials()))
+                .withEndpointConfiguration(endpoint)
+                .build()
+
+            s3MockClient.createBucket("eessipensjon")
+            storageService = S3StorageService(s3MockClient)
+            storageService.bucketname = "eessipensjon"
+            storageService.env = "q1"
+            storageService.init()
+
+            return storageService
+        }
+    }*/
 
 }
