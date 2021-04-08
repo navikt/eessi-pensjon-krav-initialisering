@@ -1,9 +1,12 @@
-package no.nav.eessi.pensjon.behandleutland.listener.architecture.integrationtest
+package no.nav.eessi.pensjon.kravinitialisering.integrationtest
 
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.verify
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
+import no.nav.eessi.pensjon.s3.S3StorageService
 import no.nav.eessi.pensjon.security.sts.STSService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -15,7 +18,6 @@ import org.mockserver.model.HttpResponse
 import org.mockserver.model.HttpStatusCode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpMethod
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
@@ -60,6 +62,9 @@ class ListenerIntegrasjonsTest {
     @MockBean
     lateinit var stsService: STSService
 
+    @MockBean
+    private lateinit var storageService: S3StorageService
+
     @Autowired
     lateinit var listener: Listener
 
@@ -68,6 +73,7 @@ class ListenerIntegrasjonsTest {
 
     @BeforeEach
     fun setup() {
+
         container = settOppUtitlityConsumer(KRAV_INITIALISERING_TOPIC)
         container.start()
         ContainerTestUtils.waitForAssignment(container, embeddedKafka.partitionsPerTopic)
@@ -94,7 +100,7 @@ class ListenerIntegrasjonsTest {
         sendMelding(mockmodel).let {
             listener.getLatch().await(15000, TimeUnit.MILLISECONDS)
         }
-        //verify(exactly = 1) { statistikkPublisher.publiserBucOpprettetStatistikk(any()) }
+        verify(storageService).put(any(), any())
     }
 
     private fun sendMelding(melding: BehandleHendelseModel) {
@@ -170,5 +176,4 @@ class ListenerIntegrasjonsTest {
             return random.nextInt(to - from) + from
         }
     }
-
 }
