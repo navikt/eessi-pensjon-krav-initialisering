@@ -23,6 +23,8 @@ kafka:
     topic: ${KRAV_INITIALISERING_TOPIC}
     groupid: eessi-pensjon-krav-initialisering-group
 
+s3_region: us-east-1
+
 #Metrics
 management:
   metrics:
