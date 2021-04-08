@@ -48,7 +48,12 @@ class Listener(private val behandleHendelse: BehandleHendelseKlient, private val
                     //støtter kun P2200 for øyeblikket!
                     logger.debug("Hendelse finnes ikke fra før. Oppretter krav bucid: ${model.bucId} saknr: ${model.sakId}")
                     if (model.hendelsesKode == HendelseKode.SOKNAD_OM_UFORE) {
-                        behandleHendelse.opprettBehandleHendelse(model)
+                        try{
+                            behandleHendelse.opprettBehandleHendelse(model)
+                        }
+                        catch (ex:Exception){
+                            logger.error(ex.message)
+                        }
                         lagringsService.lagreHendelse(model)
                     }
                 } else {
