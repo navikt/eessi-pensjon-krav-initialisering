@@ -23,6 +23,9 @@ kafka:
     topic: ${KRAV_INITIALISERING_TOPIC}
     groupid: eessi-pensjon-krav-initialisering-group
 
+eessi.pensjon.krav:
+  s3:
+    bucket.name: 'eessipensjon-krav'
 s3_region: us-east-1
 
 #Metrics
