@@ -15,7 +15,6 @@ class LagringsService (private val s3StorageService: S3StorageService) {
     private val logger = LoggerFactory.getLogger(LagringsService::class.java)
 
     fun lagreHendelse(hendelse: BehandleHendelseModel) {
-
         val path = hentPath(hendelse)
 
         s3StorageService.put(path, mapAnyToJson(hendelse))
@@ -25,9 +24,15 @@ class LagringsService (private val s3StorageService: S3StorageService) {
         val path = hentPath(hendelse)
         logger.info("Henter bucId: ${hendelse.bucId} from $path")
 
-        val hendelseModel = s3StorageService.get(path)
+        return try {
+            val hendelseModel = s3StorageService.get(path)
 
-        return hendelseModel?.let { mapJsonToAny(it, typeRefs()) }
+            hendelseModel?.let { mapJsonToAny(it, typeRefs()) }
+
+        } catch (ex: Exception) {
+            logger.error("Feiler ved henting av data : $path")
+            null
+        }
     }
 
     fun hentPath(hendelse: BehandleHendelseModel): String {
