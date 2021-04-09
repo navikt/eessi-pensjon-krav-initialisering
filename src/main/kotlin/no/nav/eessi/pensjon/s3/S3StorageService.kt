@@ -16,7 +16,7 @@ import java.util.stream.Collectors.joining
 private val logger = LoggerFactory.getLogger(S3StorageService::class.java)
 
 @Component
-@Profile("!integrationtest")
+//@Profile("!integrationtest")
 class S3StorageService(private val s3: AmazonS3){
 
     @Value("\${eessi.pensjon.krav.s3.bucket.name}")

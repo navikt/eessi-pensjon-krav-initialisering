@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.kravinitialisering.services
 
 import no.nav.eessi.pensjon.json.mapAnyToJson
 import no.nav.eessi.pensjon.json.mapJsonToAny
+import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.json.typeRefs
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
@@ -17,7 +18,14 @@ class LagringsService (private val s3StorageService: S3StorageService) {
     fun lagreHendelse(hendelse: BehandleHendelseModel) {
         val path = hentPath(hendelse)
 
-        s3StorageService.put(path, mapAnyToJson(hendelse))
+        try {
+            val jsondata = hendelse.toJson()
+
+            logger.debug("Lagrer hendelse: $path, data: $jsondata")
+            s3StorageService.put(path, jsondata)
+        } catch (ex: Exception) {
+            logger.error("Feiler ved lagring av data: $path")
+        }
     }
 
     fun hentHendelse(hendelse: BehandleHendelseModel): BehandleHendelseModel? {
@@ -27,6 +35,7 @@ class LagringsService (private val s3StorageService: S3StorageService) {
         return try {
             val hendelseModel = s3StorageService.get(path)
 
+            logger.debug("Henter hendelse fra: $path, data: $hendelseModel")
             hendelseModel?.let { mapJsonToAny(it, typeRefs()) }
 
         } catch (ex: Exception) {

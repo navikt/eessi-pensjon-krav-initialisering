@@ -1,7 +1,10 @@
 package no.nav.eessi.pensjon.kravinitialisering.integrationtest
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.verify
+import com.amazonaws.auth.AWSStaticCredentialsProvider
+import com.amazonaws.auth.AnonymousAWSCredentials
+import com.amazonaws.client.builder.AwsClientBuilder
+import com.amazonaws.services.s3.AmazonS3ClientBuilder
+import io.findify.s3mock.S3Mock
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
@@ -18,7 +21,10 @@ import org.mockserver.model.HttpResponse
 import org.mockserver.model.HttpStatusCode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
@@ -33,6 +39,7 @@ import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
+import java.net.ServerSocket
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
@@ -62,14 +69,14 @@ class ListenerIntegrasjonsTest {
     @MockBean
     lateinit var stsService: STSService
 
-    @MockBean
+    @Autowired
     private lateinit var storageService: S3StorageService
 
     @Autowired
     lateinit var listener: Listener
 
-    lateinit var container: KafkaMessageListenerContainer<String, String>
-    lateinit var sedMottattProducerTemplate: KafkaTemplate<Int, String>
+    private lateinit var container: KafkaMessageListenerContainer<String, String>
+    private lateinit var sedMottattProducerTemplate: KafkaTemplate<Int, String>
 
     @BeforeEach
     fun setup() {
@@ -96,11 +103,22 @@ class ListenerIntegrasjonsTest {
             hendelsesKode = HendelseKode.SOKNAD_OM_UFORE,
             "Test på beskrivelsen også"
         )
+        val annenMockmodel = BehandleHendelseModel(
+            sakId = "123123123",
+            bucId = "3231231",
+            hendelsesKode = HendelseKode.SOKNAD_OM_UFORE,
+            "Test på beskrivelsen også"
+        )
 
         sendMelding(mockmodel).let {
-            listener.getLatch().await(15000, TimeUnit.MILLISECONDS)
+            listener.getLatch().await(5000, TimeUnit.MILLISECONDS)
         }
-        verify(storageService).put(any(), any())
+        sendMelding(mockmodel).let {
+            listener.getLatch().await(5000, TimeUnit.MILLISECONDS)
+        }
+        sendMelding(annenMockmodel).let {
+            listener.getLatch().await(5000, TimeUnit.MILLISECONDS)
+        }
     }
 
     private fun sendMelding(melding: BehandleHendelseModel) {
@@ -175,5 +193,41 @@ class ListenerIntegrasjonsTest {
             val random = Random()
             return random.nextInt(to - from) + from
         }
+
+        fun initMockS3(): S3StorageService {
+            val s3Port = ServerSocket(0).use { it.localPort }
+
+            val s3api = S3Mock.Builder().withPort(s3Port).withInMemoryBackend().build()
+            s3api.start()
+            val endpoint = AwsClientBuilder.EndpointConfiguration("http://localhost:$s3Port", "us-east-1")
+
+            val s3MockClient = AmazonS3ClientBuilder.standard()
+                .withPathStyleAccessEnabled(true)
+                .withCredentials(AWSStaticCredentialsProvider(AnonymousAWSCredentials()))
+                .withEndpointConfiguration(endpoint)
+                .build()
+
+            s3MockClient.createBucket("eessipensjon")
+            //return s3MockClient
+            val storageService = S3StorageService(s3MockClient)
+            storageService.bucketname = "eessipensjon"
+            storageService.env = "q1"
+            storageService.init()
+            return storageService
+        }
     }
+
+    // Mocks PDL-PersonService and EuxService
+    @Suppress("unused")
+    @Profile("integrationtest")
+    @TestConfiguration
+    class TestConfig {
+        @Bean
+        fun s3StorageService(): S3StorageService {
+            return initMockS3()
+        }
+    }
+
+
+
 }
