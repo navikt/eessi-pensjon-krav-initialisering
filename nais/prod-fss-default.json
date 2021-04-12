@@ -1,1 +1,5 @@
-//{}
+{
+  "cluster": "prod",
+  "serviceuserkv": "/serviceuser/data/prod/srveessipensjonkrav",
+  "appsecrets": "/kv/prod/fss/eessi-pensjon-krav-initialisering"
+}
