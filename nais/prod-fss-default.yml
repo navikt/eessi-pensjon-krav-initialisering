@@ -12,7 +12,7 @@ spec:
     - name: NAMESPACE
       value: p
     - name: KAFKA_BOOTSTRAP_SERVERS_URL
-      value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
+      value: SASL_SSL://a01apvl00145.adeo.no:8443,SASL_SSL://a01apvl00146.adeo.no:8443,SASL_SSL://a01apvl00147.adeo.no:8443,SASL_SSL://a01apvl00149.adeo.no:8443
     - name: KRAV_INITIALISERING_TOPIC
       value: privat-eessipensjon-krav-initialisering
     - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
@@ -22,7 +22,7 @@ spec:
     - name: S3_FSS_URL
       value: http://objectstore.rook-ceph.svc.nais.local
     - name: EESSI_PENSJON_KRAV_S3_CREDS_USERNAME
-      value:
+      value: B4FVJDTJNT7S07IJ2ELC
     - name: ENV
       value: prod
     - name: BEHANDLEHENDELSE_URL
