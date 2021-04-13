@@ -60,4 +60,4 @@ spec:
       - kvPath: {{serviceuserkv}}
         mountPath: /var/run/secrets/nais.io/srveessipensjonkrav
       - kvPath: {{appsecrets}}
-        mountPath: /var/run/secrets/nais.io/appcredentials
+        mountPath: /var/run/secrets/nais.io/vault
