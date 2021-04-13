@@ -1,7 +1,7 @@
 kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
-  name: eessi-pensjon-statistikk
+  name: eessi-pensjon-krav-initialisering
   namespace: default
   labels:
     team: eessipensjon
