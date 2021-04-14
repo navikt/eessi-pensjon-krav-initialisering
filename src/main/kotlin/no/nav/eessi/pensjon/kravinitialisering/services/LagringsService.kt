@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.kravinitialisering.services
 
-import no.nav.eessi.pensjon.json.mapAnyToJson
 import no.nav.eessi.pensjon.json.mapJsonToAny
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.json.typeRefs
@@ -27,6 +26,8 @@ class LagringsService (private val s3StorageService: S3StorageService) {
             logger.error("Feiler ved lagring av data: $path")
         }
     }
+
+    fun kanHendelsenOpprettes(hendelseModel: BehandleHendelseModel) = hentHendelse(hendelseModel) == null
 
     fun hentHendelse(hendelse: BehandleHendelseModel): BehandleHendelseModel? {
         val path = hentPath(hendelse)

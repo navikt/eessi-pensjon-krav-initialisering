@@ -3,7 +3,6 @@ package no.nav.eessi.pensjon.kravinitialisering.behandlehendelse
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
-import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,14 +24,21 @@ class BehandleHendelseKlient(private val penBehandleHendelseOidcRestTemplate: Re
 
      @PostConstruct
      fun initMetrics() {
-         behandlehendelse = metricsHelper.init("Behandlehendelse")
+         behandlehendelse = metricsHelper.init("Behandlehendelse", alert = MetricsHelper.Toggle.OFF)
      }
 
-    fun opprettBehandleHendelse(model: BehandleHendelseModel) {
+    fun kallOpprettBehandleHendelse(hendelseModel: BehandleHendelseModel) {
+        try {
+            opprettBehandleHendelse(hendelseModel)
+        } catch (ex: Exception) {
+            logger.error(ex.message)
+        }
+    }
+
+    private fun opprettBehandleHendelse(model: BehandleHendelseModel) {
         behandlehendelse.measure {
 
             try {
-                val urlpath = "/"
                 val headers = HttpHeaders()
                 headers.contentType = MediaType.APPLICATION_JSON
                 val httpEntity = HttpEntity(model.toJson(), headers)
