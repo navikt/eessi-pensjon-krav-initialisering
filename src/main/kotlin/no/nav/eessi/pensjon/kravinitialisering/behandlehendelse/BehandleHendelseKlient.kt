@@ -51,10 +51,10 @@ class BehandleHendelseKlient(private val penBehandleHendelseOidcRestTemplate: Re
                 )
             } catch (ex: HttpStatusCodeException) {
                 logger.error("En feil oppstod under opprettelse av behandlehendlse ex: ", ex)
-                throw RuntimeException("En feil oppstod under opprettelse av behandlehendlse ex: ${ex.message} body: ${ex.responseBodyAsString}")
+                throw RuntimeException("En feil oppstod under opprettelse av behandlehendelse ex: ${ex.message} body: ${ex.responseBodyAsString}")
             } catch (ex: Exception) {
                 logger.error("En feil oppstod under opprettelse av behandlehendlse ex: ", ex)
-                throw RuntimeException("En feil oppstod under opprettelse av behandlehendlse ex: ${ex.message}")
+                throw RuntimeException("En feil oppstod under opprettelse av behandlehendelse ex: ${ex.message}")
             }
 
             logger.debug("*** Ferdig med melding ***")

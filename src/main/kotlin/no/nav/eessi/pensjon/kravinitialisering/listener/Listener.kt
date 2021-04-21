@@ -5,6 +5,7 @@ import no.nav.eessi.pensjon.json.mapJsonToAny
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.json.typeRefs
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
+import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.behandlehendelse.BehandleHendelseKlient
 import no.nav.eessi.pensjon.kravinitialisering.services.LagringsService
 import no.nav.eessi.pensjon.metrics.MetricsHelper
@@ -28,7 +29,7 @@ class Listener(
 
     private val logger = LoggerFactory.getLogger(Listener::class.java)
 
-    private val latch = CountDownLatch(1)
+    private val latch = CountDownLatch(4)
 
     private lateinit var opprettKrav: MetricsHelper.Metric
     private lateinit var opprettKravFinnes: MetricsHelper.Metric
@@ -60,16 +61,24 @@ class Listener(
                 logger.debug("Hendelse : ${hendelse.toJson()}")
                 val hendelseModel: BehandleHendelseModel = mapJsonToAny(hendelse, typeRefs())
 
-                if (lagringsService.kanHendelsenOpprettes(hendelseModel)) {
-                    opprettKrav.measure {
-                        logger.debug("Hendelse finnes ikke fra før. Oppretter krav bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
+                if (hendelseModel.hendelsesKode == HendelseKode.SOKNAD_OM_ALDERSPENSJON) {
+                    logger.debug("Hendelse krav ${hendelseModel.hendelsesKode}, bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
 
-                        hendelseKlient.kallOpprettBehandleHendelse(hendelseModel)
-                        lagringsService.lagreHendelse(hendelseModel)
-                    }
-                } else {
-                    opprettKravFinnes.measure {
-                        logger.debug("Hendelse finnes og krav er opprettet bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
+                    hendelseKlient.kallOpprettBehandleHendelse(hendelseModel)
+                }
+
+                if (hendelseModel.hendelsesKode == HendelseKode.SOKNAD_OM_UFORE) {
+                    if (lagringsService.kanHendelsenOpprettes(hendelseModel)) {
+                        opprettKrav.measure {
+                            logger.debug("Hendelse finnes ikke fra før. Oppretter krav bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
+
+                            hendelseKlient.kallOpprettBehandleHendelse(hendelseModel)
+                            lagringsService.lagreHendelse(hendelseModel)
+                        }
+                    } else {
+                        opprettKravFinnes.measure {
+                            logger.debug("Hendelse finnes og krav er opprettet bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
+                        }
                     }
                 }
 

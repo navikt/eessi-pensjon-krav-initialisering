@@ -19,6 +19,7 @@ import org.mockserver.model.Header
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.HttpStatusCode
+import org.mockserver.verify.VerificationTimes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
@@ -43,7 +44,7 @@ import java.net.ServerSocket
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
 private lateinit var mockServer: ClientAndServer
@@ -70,7 +71,7 @@ class ListenerIntegrasjonsTest {
     lateinit var stsService: STSService
 
     @Autowired
-    private lateinit var storageService: S3StorageService
+    private lateinit var s3StorageService: S3StorageService
 
     @Autowired
     lateinit var listener: Listener
@@ -96,6 +97,18 @@ class ListenerIntegrasjonsTest {
 
     @Test
     fun `En hendelse skal initalisere et krav`() {
+        // -- alder
+
+        val mockmodelAlder = BehandleHendelseModel(
+            sakId = "123123123",
+            bucId = "1231231987",
+            hendelsesKode = HendelseKode.SOKNAD_OM_ALDERSPENSJON,
+            "Test på beskrivelsen også"
+        )
+
+        sendMelding(mockmodelAlder)
+
+        // -- uføre
 
         val mockmodel = BehandleHendelseModel(
             sakId = "123123123",
@@ -110,15 +123,25 @@ class ListenerIntegrasjonsTest {
             "Test på beskrivelsen også"
         )
 
-        sendMelding(mockmodel).let {
-            listener.getLatch().await(5000, TimeUnit.MILLISECONDS)
-        }
-        sendMelding(mockmodel).let {
-            listener.getLatch().await(5000, TimeUnit.MILLISECONDS)
-        }
-        sendMelding(annenMockmodel).let {
-            listener.getLatch().await(5000, TimeUnit.MILLISECONDS)
-        }
+        sendMelding(mockmodel)
+        sendMelding(mockmodel)
+        sendMelding(annenMockmodel)
+
+        listener.getLatch().await(5000, TimeUnit.MILLISECONDS)
+
+        verify()
+
+    }
+
+    private fun verify() {
+
+        mockServer.verify(
+            HttpRequest.request()
+                .withMethod(HttpMethod.POST.name)
+                .withPath("/"),
+            VerificationTimes.exactly(3)
+        )
+
     }
 
     private fun sendMelding(melding: BehandleHendelseModel) {
@@ -224,6 +247,7 @@ class ListenerIntegrasjonsTest {
     class TestConfig {
         @Bean
         fun s3StorageService(): S3StorageService {
+            println("InintMock S3")
             return initMockS3()
         }
     }
