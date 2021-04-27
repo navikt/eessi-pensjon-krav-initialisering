@@ -40,7 +40,7 @@ class LagringsService (private val s3StorageService: S3StorageService) {
             hendelseModel?.let { mapJsonToAny(it, typeRefs()) }
 
         } catch (ex: Exception) {
-            logger.error("Feiler ved henting av data : $path")
+            logger.info("Feiler ved henting av data : $path")
             null
         }
     }
