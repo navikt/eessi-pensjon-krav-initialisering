@@ -4,7 +4,9 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.AnonymousAWSCredentials
 import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
+import com.ninjasquad.springmockk.MockkBean
 import io.findify.s3mock.S3Mock
+import io.mockk.every
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
@@ -23,7 +25,6 @@ import org.mockserver.verify.VerificationTimes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod
@@ -64,10 +65,10 @@ class ListenerIntegrasjonsTest {
     @Autowired
     lateinit var embeddedKafka: EmbeddedKafkaBroker
 
-    @MockBean(name = "pensjonsinformasjonOidcRestTemplate")
+    @MockkBean(name = "pensjonsinformasjonOidcRestTemplate")
     lateinit var restEuxTemplate: RestTemplate
 
-    @MockBean
+    @MockkBean
     lateinit var stsService: STSService
 
     @Autowired
@@ -81,6 +82,7 @@ class ListenerIntegrasjonsTest {
 
     @BeforeEach
     fun setup() {
+        every { stsService.getSystemOidcToken() } returns "something"
 
         container = settOppUtitlityConsumer(KRAV_INITIALISERING_TOPIC)
         container.start()

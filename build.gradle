@@ -2,7 +2,7 @@ buildscript {
 
     ext {
         kotlinVersion = '1.4.31'
-        springBootVersion = '2.3.2.RELEASE'
+        springBootVersion = '2.4.3'
         logstashLogbackVersion = '6.6'
     }
 
@@ -62,6 +62,7 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'org.springframework.kafka:spring-kafka'
+    testImplementation("com.ninja-squad:springmockk:3.0.1")
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude module: 'junit'
         exclude module: "mockito-core"
@@ -71,18 +72,17 @@ dependencies {
 
     //aws and s3
     implementation 'com.amazonaws:aws-java-sdk-s3:1.11.942'
-    testImplementation("io.findify:s3mock_2.12:0.2.5")
+    testImplementation("io.findify:s3mock_2.13:0.2.6")
 
     //mock - test
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.1")
-    testImplementation('org.mockito:mockito-junit-jupiter:3.8.0')
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
     testImplementation("org.mock-server:mockserver-client-java:5.11.2")
     testImplementation("org.mock-server:mockserver-netty:5.11.2") {
         exclude module: 'junit'
     }
     testImplementation "io.mockk:mockk:1.10.0"
+
 
     // Architecture tests
     testImplementation 'com.tngtech.archunit:archunit:0.14.1'
@@ -101,7 +101,7 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '30.1-jre'
 
     //eessi pensjon libs
-    implementation("no.nav.eessi.pensjon:ep-logging:1.0.6")
+    implementation("no.nav.eessi.pensjon:ep-logging:1.0.9")
 }
 
 test {
