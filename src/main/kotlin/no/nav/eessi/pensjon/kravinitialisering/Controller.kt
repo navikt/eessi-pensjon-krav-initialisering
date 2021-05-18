@@ -25,25 +25,35 @@ class Controller(private val hendelseKlient: BehandleHendelseKlient, private val
     }
 
     @GetMapping("bucs")
-    fun listAllPBuc03() {
+    fun listAllPBuc() {
 
-        val list = s3StorageService.list("P_BUC_03")
+        val listPbuc01And03 = s3StorageService.list("P_BUC_01") + s3StorageService.list("P_BUC_03")
 
         //"P_BUC_03/123123123" -> json
-        val lagre = LagringsService(s3StorageService)
+        val lagringsService = LagringsService(s3StorageService)
 
-        list.forEach {
+        listPbuc01And03.forEach {
             println("List element: $it")
 
             val jsonObj = s3StorageService.get(it)
             val hendelse = mapJsonToAny(jsonObj!!, typeRefs<BehandleHendelseModel>())
-
-
-            val path = lagre.hentPath(hendelse)
+            val path = lagringsService.hentPath(hendelse)
             println("path: $path")
-            //lagre.lagreHendelse(hendelse)
         }
-
     }
 
+    fun konverterAlleGamleBucFraBucIDTilSakId() {
+        val listPbuc01And03 = s3StorageService.list("P_BUC_01") + s3StorageService.list("P_BUC_03")
+
+        val lagringsService = LagringsService(s3StorageService)
+
+        //konverer kun buc uten sak (altså av gammel type)
+        listPbuc01And03.forEach {
+            val jsonObj = s3StorageService.get(it)
+            val hendelse = mapJsonToAny(jsonObj!!, typeRefs<BehandleHendelseModel>())
+            hendelse.let {
+                lagringsService.lagreHendelseMedSakId(hendelse)
+            }
+        }
+    }
 }
