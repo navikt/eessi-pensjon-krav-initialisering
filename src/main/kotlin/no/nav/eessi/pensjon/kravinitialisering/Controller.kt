@@ -42,14 +42,15 @@ class Controller(private val hendelseKlient: BehandleHendelseKlient, private val
 
             sb.append("-------hendelse---------\n")
             sb.append(hendelse.toJson()).append("\n")
-            sb.append("------------------------\n")
-
-            sb.append("old path: ").append(lagringsService.hentPath(hendelse)).append("\n")
-            sb.append("new path: ").append(lagringsService.hentPathMedSakId(hendelse)).append("\n")
             sb.append("----------------------------------------\n")
         }
 
         return sb.toString()
+    }
+
+    @PostMapping("konvertering")
+    fun konverterPathTilNyttFormat() {
+        konverterAlleGamleBucFraBucIDTilSakId()
     }
 
     fun konverterAlleGamleBucFraBucIDTilSakId() {

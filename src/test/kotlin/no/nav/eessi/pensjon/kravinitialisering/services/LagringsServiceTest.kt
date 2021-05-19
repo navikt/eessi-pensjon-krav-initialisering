@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.net.ServerSocket
+import java.time.LocalDateTime
 
 internal class LagringsServiceTest {
 
@@ -61,6 +62,6 @@ internal class LagringsServiceTest {
     }
 
     fun mockHendelse(bucId: String, hendelsekode: HendelseKode): BehandleHendelseModel {
-        return BehandleHendelseModel("12354", bucId, hendelsekode,"beskrivelse")
+        return BehandleHendelseModel("12354", bucId, hendelsekode, beskrivelse = "beskrivelse", opprettetDato = LocalDateTime.of(2020, 1, 1, 10, 10, 10))
     }
 }

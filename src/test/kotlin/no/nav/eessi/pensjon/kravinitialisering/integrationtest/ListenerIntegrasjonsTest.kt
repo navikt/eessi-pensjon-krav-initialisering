@@ -44,6 +44,7 @@ import org.springframework.web.client.RestTemplate
 import java.net.ServerSocket
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.*
 
@@ -105,6 +106,7 @@ class ListenerIntegrasjonsTest {
             sakId = "123123123",
             bucId = "1231231987",
             hendelsesKode = HendelseKode.SOKNAD_OM_ALDERSPENSJON,
+            LocalDateTime.now(),
             "Test på beskrivelsen også"
         )
 
@@ -116,13 +118,13 @@ class ListenerIntegrasjonsTest {
             sakId = "123123123",
             bucId = "1231231",
             hendelsesKode = HendelseKode.SOKNAD_OM_UFORE,
-            "Test på beskrivelsen også"
+            beskrivelse = "Test på beskrivelsen også"
         )
         val annenMockmodel = BehandleHendelseModel(
             sakId = "123123123",
             bucId = "3231231",
             hendelsesKode = HendelseKode.SOKNAD_OM_UFORE,
-            "Test på beskrivelsen også"
+            beskrivelse = "Test på beskrivelsen også"
         )
 
         sendMelding(mockmodel)

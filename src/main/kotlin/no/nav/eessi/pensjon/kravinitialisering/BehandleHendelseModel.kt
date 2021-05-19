@@ -1,10 +1,20 @@
 package no.nav.eessi.pensjon.kravinitialisering
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import no.nav.eessi.pensjon.json.JsonDateDeserializer
+import no.nav.eessi.pensjon.json.JsonDateSerializer
+import java.time.LocalDateTime
+
+
 data class BehandleHendelseModel(
-    var sakId: String? = null,
-    var bucId: String? = null,
-    var hendelsesKode: HendelseKode,
-    var beskrivelse: String? = null
+    val sakId: String? = null,
+    val bucId: String? = null,
+    val hendelsesKode: HendelseKode,
+    @JsonDeserialize(using = JsonDateDeserializer::class)
+    @JsonSerialize(using = JsonDateSerializer::class)
+    val opprettetDato: LocalDateTime = LocalDateTime.now(),
+    val beskrivelse: String? = null
 )
 
 enum class HendelseKode {
@@ -13,3 +23,6 @@ enum class HendelseKode {
     INFORMASJON_FRA_UTLANDET,
     UKJENT
 }
+
+
+
