@@ -82,7 +82,7 @@ class LagringsService (private val s3StorageService: S3StorageService) {
                 throw RuntimeException(msg).also { logger.error(msg) }
             }
         }
-        val path =  "$bucType/${hendelse.bucId}/${hendelse.sakId}"
+        val path =  "$bucType/sakid=${hendelse.sakId}.json"
         logger.info("Hendelsespath: $path")
 
         return path

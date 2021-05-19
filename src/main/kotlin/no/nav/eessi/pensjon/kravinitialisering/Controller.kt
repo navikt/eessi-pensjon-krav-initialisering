@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.kravinitialisering
 
 import no.nav.eessi.pensjon.json.mapJsonToAny
+import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.json.typeRefs
 import no.nav.eessi.pensjon.kravinitialisering.behandlehendelse.BehandleHendelseKlient
 import no.nav.eessi.pensjon.kravinitialisering.services.LagringsService
@@ -34,15 +35,20 @@ class Controller(private val hendelseKlient: BehandleHendelseKlient, private val
 
         val sb = StringBuilder()
         listPbuc01And03.forEach {
-            println("List element: $it")
             sb.append("Lister elementer: ").append(it).append("\n")
 
             val jsonObj = s3StorageService.get(it)
             val hendelse = mapJsonToAny(jsonObj!!, typeRefs<BehandleHendelseModel>())
-            val path = lagringsService.hentPath(hendelse)
-            println("path: $path")
-            sb.append("path: ").append(path).append("\n")
+
+            sb.append("-------hendelse---------\n")
+            sb.append(hendelse.toJson()).append("\n")
+            sb.append("------------------------\n")
+
+            sb.append("old path: ").append(lagringsService.hentPath(hendelse)).append("\n")
+            sb.append("new path: ").append(lagringsService.hentPathMedSakId(hendelse)).append("\n")
+            sb.append("----------------------------------------\n")
         }
+
         return sb.toString()
     }
 
