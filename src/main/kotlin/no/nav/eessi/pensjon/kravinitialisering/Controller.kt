@@ -25,21 +25,25 @@ class Controller(private val hendelseKlient: BehandleHendelseKlient, private val
     }
 
     @GetMapping("bucs")
-    fun listAllPBuc() {
+    fun listAllPBuc(): String {
 
         val listPbuc01And03 = s3StorageService.list("P_BUC_01") + s3StorageService.list("P_BUC_03")
 
         //"P_BUC_03/123123123" -> json
         val lagringsService = LagringsService(s3StorageService)
 
+        val sb = StringBuilder()
         listPbuc01And03.forEach {
             println("List element: $it")
+            sb.append("Lister elementer: ").append(it).append("\n")
 
             val jsonObj = s3StorageService.get(it)
             val hendelse = mapJsonToAny(jsonObj!!, typeRefs<BehandleHendelseModel>())
             val path = lagringsService.hentPath(hendelse)
             println("path: $path")
+            sb.append("path: ").append(path).append("\n")
         }
+        return sb.toString()
     }
 
     fun konverterAlleGamleBucFraBucIDTilSakId() {
