@@ -103,7 +103,7 @@ class ListenerIntegrasjonsTest {
         // -- alder
 
         val mockmodelAlder = BehandleHendelseModel(
-            sakId = "123123123",
+            sakId = "12312312347",
             bucId = "1231231987",
             hendelsesKode = HendelseKode.SOKNAD_OM_ALDERSPENSJON,
             LocalDateTime.now(),
@@ -121,7 +121,7 @@ class ListenerIntegrasjonsTest {
             beskrivelse = "Test på beskrivelsen også"
         )
         val annenMockmodel = BehandleHendelseModel(
-            sakId = "123123123",
+            sakId = "1231231234",
             bucId = "3231231",
             hendelsesKode = HendelseKode.SOKNAD_OM_UFORE,
             beskrivelse = "Test på beskrivelsen også"

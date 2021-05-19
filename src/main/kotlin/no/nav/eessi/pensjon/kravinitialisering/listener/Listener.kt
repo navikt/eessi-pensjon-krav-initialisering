@@ -73,7 +73,7 @@ class Listener(
                             logger.debug("Hendelse finnes ikke fra før. Oppretter krav bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
 
                             hendelseKlient.kallOpprettBehandleHendelse(hendelseModel)
-                            lagringsService.lagreHendelse(hendelseModel)
+                            lagringsService.lagreHendelseMedSakId(hendelseModel)
                         }
                     } else {
                         opprettKravFinnes.measure {

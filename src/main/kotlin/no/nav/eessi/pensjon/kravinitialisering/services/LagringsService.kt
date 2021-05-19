@@ -14,7 +14,7 @@ class LagringsService (private val s3StorageService: S3StorageService) {
 
     private val logger = LoggerFactory.getLogger(LagringsService::class.java)
 
-    fun lagreHendelse(hendelse: BehandleHendelseModel) {
+    private fun lagreHendelse(hendelse: BehandleHendelseModel) {
         val path = hentPath(hendelse)
 
         try {
@@ -43,8 +43,8 @@ class LagringsService (private val s3StorageService: S3StorageService) {
     fun kanHendelsenOpprettes(hendelseModel: BehandleHendelseModel) = hentHendelse(hendelseModel) == null
 
     fun hentHendelse(hendelse: BehandleHendelseModel): BehandleHendelseModel? {
-        val path = hentPath(hendelse)
-        logger.info("Henter bucId: ${hendelse.bucId} from $path")
+        val path = hentPathMedSakId(hendelse)
+        logger.info("Henter sakId: ${hendelse.sakId} from $path")
 
         return try {
             val hendelseModel = s3StorageService.get(path)
@@ -58,7 +58,7 @@ class LagringsService (private val s3StorageService: S3StorageService) {
         }
     }
 
-    fun hentPath(hendelse: BehandleHendelseModel): String {
+    private fun hentPath(hendelse: BehandleHendelseModel): String {
         val bucType = when (hendelse.hendelsesKode) {
             HendelseKode.SOKNAD_OM_UFORE -> "P_BUC_03"
             HendelseKode.SOKNAD_OM_ALDERSPENSJON -> "P_BUC_01"

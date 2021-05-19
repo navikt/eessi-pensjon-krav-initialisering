@@ -55,7 +55,7 @@ internal class LagringsServiceTest {
     fun `lagre og hente P2200 hendelse`() {
         val hendelse = mockHendelse("54321", HendelseKode.SOKNAD_OM_UFORE)
 
-        lagringsService.lagreHendelse(hendelse)
+        lagringsService.lagreHendelseMedSakId(hendelse)
 
         val result = lagringsService.hentHendelse(hendelse)
         assertEquals(hendelse, result)
