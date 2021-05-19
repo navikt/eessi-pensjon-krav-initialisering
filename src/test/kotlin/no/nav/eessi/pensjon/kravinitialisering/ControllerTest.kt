@@ -13,11 +13,10 @@ import no.nav.eessi.pensjon.s3.S3StorageService
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-
 import java.net.ServerSocket
+import java.time.LocalDateTime
 
 internal class ControllerTest {
-
 
     private lateinit var controller: Controller
 
@@ -65,6 +64,7 @@ internal class ControllerTest {
 
         //sjekker at vi har både gammel og ny pbuc lagret på  s3
         listPbuc01And03 = s3StorageService.list("P_BUC_01") + s3StorageService.list("P_BUC_03")
+
         assert(listPbuc01And03.size == 2)
 
     }
@@ -73,7 +73,8 @@ internal class ControllerTest {
         val hendelse = BehandleHendelseModel(
             "13546",
             "654654351",
-            HendelseKode.SOKNAD_OM_UFORE
+            HendelseKode.SOKNAD_OM_UFORE,
+            LocalDateTime.now()   
         )
 
         val path  = lagringsService.hentPath(hendelse)

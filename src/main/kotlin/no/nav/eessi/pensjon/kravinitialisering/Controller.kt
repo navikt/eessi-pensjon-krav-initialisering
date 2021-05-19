@@ -28,10 +28,9 @@ class Controller(private val hendelseKlient: BehandleHendelseKlient, private val
     @GetMapping("bucs")
     fun listAllPBuc(): String {
 
-        val listPbuc01And03 = s3StorageService.list("P_BUC_01") + s3StorageService.list("P_BUC_03")
 
-        //"P_BUC_03/123123123" -> json
-        val lagringsService = LagringsService(s3StorageService)
+        val tmp = s3StorageService.list("P_BUC_01") + s3StorageService.list("P_BUC_03")
+        val listPbuc01And03 = tmp.sorted()
 
         val sb = StringBuilder()
         listPbuc01And03.forEach {
@@ -42,14 +41,16 @@ class Controller(private val hendelseKlient: BehandleHendelseKlient, private val
 
             sb.append("-------hendelse---------\n")
             sb.append(hendelse.toJson()).append("\n")
-            sb.append("------------------------\n")
-
-            sb.append("old path: ").append(lagringsService.hentPath(hendelse)).append("\n")
-            sb.append("new path: ").append(lagringsService.hentPathMedSakId(hendelse)).append("\n")
             sb.append("----------------------------------------\n")
         }
 
         return sb.toString()
+    }
+
+
+    @PostMapping("konvertering")
+    fun konverterPathTilNyttFormat() {
+        konverterAlleGamleBucFraBucIDTilSakId()
     }
 
     fun konverterAlleGamleBucFraBucIDTilSakId() {
