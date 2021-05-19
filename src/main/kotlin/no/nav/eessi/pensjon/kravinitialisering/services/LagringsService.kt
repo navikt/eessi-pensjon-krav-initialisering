@@ -27,6 +27,19 @@ class LagringsService (private val s3StorageService: S3StorageService) {
         }
     }
 
+    fun lagreHendelseMedSakId(hendelse: BehandleHendelseModel) {
+        val path = hentPathMedSakId(hendelse)
+
+        try {
+            val jsondata = hendelse.toJson()
+
+            logger.debug("Lagrer hendelse: $path, data: $jsondata")
+            s3StorageService.put(path, jsondata)
+        } catch (ex: Exception) {
+            logger.error("Feiler ved lagring av data: $path")
+        }
+    }
+
     fun kanHendelsenOpprettes(hendelseModel: BehandleHendelseModel) = hentHendelse(hendelseModel) == null
 
     fun hentHendelse(hendelse: BehandleHendelseModel): BehandleHendelseModel? {
@@ -55,6 +68,21 @@ class LagringsService (private val s3StorageService: S3StorageService) {
             }
         }
         val path =  "$bucType/${hendelse.bucId}"
+        logger.info("Hendelsespath: $path")
+
+        return path
+    }
+
+    fun hentPathMedSakId(hendelse: BehandleHendelseModel): String {
+        val bucType = when (hendelse.hendelsesKode) {
+            HendelseKode.SOKNAD_OM_UFORE -> "P_BUC_03"
+            HendelseKode.SOKNAD_OM_ALDERSPENSJON -> "P_BUC_01"
+            else -> {
+                val msg = "Ikke gyldig hendelse for path. bucid: ${hendelse.sakId}"
+                throw RuntimeException(msg).also { logger.error(msg) }
+            }
+        }
+        val path =  "$bucType/sakid=${hendelse.sakId}.json"
         logger.info("Hendelsespath: $path")
 
         return path
