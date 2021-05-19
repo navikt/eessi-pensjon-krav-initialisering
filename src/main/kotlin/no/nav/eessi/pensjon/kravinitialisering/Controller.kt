@@ -28,6 +28,7 @@ class Controller(private val hendelseKlient: BehandleHendelseKlient, private val
     @GetMapping("bucs")
     fun listAllPBuc(): String {
 
+
         val tmp = s3StorageService.list("P_BUC_01") + s3StorageService.list("P_BUC_03")
         val listPbuc01And03 = tmp.sorted()
 
@@ -45,6 +46,7 @@ class Controller(private val hendelseKlient: BehandleHendelseKlient, private val
 
         return sb.toString()
     }
+
 
     @PostMapping("konvertering")
     fun konverterPathTilNyttFormat() {
