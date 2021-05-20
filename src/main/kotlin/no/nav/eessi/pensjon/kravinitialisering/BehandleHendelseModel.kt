@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.kravinitialisering
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import no.nav.eessi.pensjon.json.JsonDateDeserializer
@@ -13,6 +14,7 @@ data class BehandleHendelseModel(
     val hendelsesKode: HendelseKode,
     @JsonDeserialize(using = JsonDateDeserializer::class)
     @JsonSerialize(using = JsonDateSerializer::class)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     val opprettetDato: LocalDateTime = LocalDateTime.now(),
     val beskrivelse: String? = null
 )

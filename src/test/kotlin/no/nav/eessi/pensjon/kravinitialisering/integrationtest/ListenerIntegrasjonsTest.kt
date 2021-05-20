@@ -46,7 +46,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.LocalDateTime
 import java.util.*
-import java.util.concurrent.*
+import java.util.concurrent.TimeUnit
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
 private lateinit var mockServer: ClientAndServer
@@ -127,9 +127,20 @@ class ListenerIntegrasjonsTest {
             beskrivelse = "Test på beskrivelsen også"
         )
 
+        val mockModelUtenOpprettdato =
+        """
+        {            
+            "sakId" : "1231231111",
+            "bucId" : "3231231",
+            "hendelsesKode" : "SOKNAD_OM_UFORE",
+            "beskrivelse" : "Test på beskrivelsen også"
+        }            
+        """.trimIndent()
+
         sendMelding(mockmodel)
         sendMelding(mockmodel)
         sendMelding(annenMockmodel)
+        sendMeldingString(mockModelUtenOpprettdato)
 
         listener.getLatch().await(5000, TimeUnit.MILLISECONDS)
 
@@ -143,13 +154,17 @@ class ListenerIntegrasjonsTest {
             HttpRequest.request()
                 .withMethod(HttpMethod.POST.name)
                 .withPath("/"),
-            VerificationTimes.exactly(3)
+            VerificationTimes.exactly(4)
         )
 
     }
 
     private fun sendMelding(melding: BehandleHendelseModel) {
         sedMottattProducerTemplate.sendDefault(melding.toJson())
+    }
+
+    private fun sendMeldingString(melding: String) {
+        sedMottattProducerTemplate.sendDefault(melding)
     }
 
     private fun shutdown(container: KafkaMessageListenerContainer<String, String>) {

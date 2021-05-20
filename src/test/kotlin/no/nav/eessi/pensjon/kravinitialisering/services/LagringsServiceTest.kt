@@ -64,4 +64,8 @@ internal class LagringsServiceTest {
     fun mockHendelse(bucId: String, hendelsekode: HendelseKode): BehandleHendelseModel {
         return BehandleHendelseModel("12354", bucId, hendelsekode, beskrivelse = "beskrivelse", opprettetDato = LocalDateTime.of(2020, 1, 1, 10, 10, 10))
     }
+    fun mockHendelseUtenDato(bucId: String, hendelsekode: HendelseKode): BehandleHendelseModel {
+        return BehandleHendelseModel("12354", bucId, hendelsekode, beskrivelse = "beskrivelse", opprettetDato = LocalDateTime.of(2020, 1, 1, 10, 10, 10))
+    }
+
 }
