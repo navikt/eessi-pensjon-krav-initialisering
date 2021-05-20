@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.kravinitialisering.behandlehendelse
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
+import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModelPesys
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,27 +16,34 @@ import org.springframework.web.client.RestTemplate
 import javax.annotation.PostConstruct
 
 @Component
-class BehandleHendelseKlient(private val penBehandleHendelseOidcRestTemplate: RestTemplate,
-     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
+class BehandleHendelseKlient(
+    private val penBehandleHendelseOidcRestTemplate: RestTemplate,
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
+) {
 
-     private val logger = LoggerFactory.getLogger(BehandleHendelseKlient::class.java)
+    private val logger = LoggerFactory.getLogger(BehandleHendelseKlient::class.java)
 
-     private lateinit var behandlehendelse: MetricsHelper.Metric
+    private lateinit var behandlehendelse: MetricsHelper.Metric
 
-     @PostConstruct
-     fun initMetrics() {
-         behandlehendelse = metricsHelper.init("Behandlehendelse", alert = MetricsHelper.Toggle.OFF)
-     }
+    @PostConstruct
+    fun initMetrics() {
+        behandlehendelse = metricsHelper.init("Behandlehendelse", alert = MetricsHelper.Toggle.OFF)
+    }
 
     fun kallOpprettBehandleHendelse(hendelseModel: BehandleHendelseModel) {
         try {
-            opprettBehandleHendelse(hendelseModel)
+            opprettBehandleHendelse(BehandleHendelseModelPesys(
+                sakId = hendelseModel.sakId,
+                bucId = hendelseModel.bucId,
+                hendelsesKode = hendelseModel.hendelsesKode,
+                beskrivelse = hendelseModel.beskrivelse
+            ))
         } catch (ex: Exception) {
             logger.error(ex.message)
         }
     }
 
-    private fun opprettBehandleHendelse(model: BehandleHendelseModel) {
+    private fun opprettBehandleHendelse(model: BehandleHendelseModelPesys) {
         behandlehendelse.measure {
 
             try {
