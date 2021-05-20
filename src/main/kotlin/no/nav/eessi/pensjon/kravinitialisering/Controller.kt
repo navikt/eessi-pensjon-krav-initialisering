@@ -6,6 +6,7 @@ import no.nav.eessi.pensjon.json.typeRefs
 import no.nav.eessi.pensjon.kravinitialisering.behandlehendelse.BehandleHendelseKlient
 import no.nav.eessi.pensjon.kravinitialisering.services.LagringsService
 import no.nav.eessi.pensjon.s3.S3StorageService
+import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController
 //Test midlertidig
 @RestController
 class Controller(private val hendelseKlient: BehandleHendelseKlient, private val s3StorageService: S3StorageService) {
+
+
+    private val logger = LoggerFactory.getLogger(Controller::class.java)
 
     @PostMapping("kravinit", consumes = ["application/json"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun prefillDocument(@RequestBody model: BehandleHendelseModel) {
@@ -62,8 +66,28 @@ class Controller(private val hendelseKlient: BehandleHendelseKlient, private val
         listPbuc01And03.forEach {
             val jsonObj = s3StorageService.get(it)
             val hendelse = mapJsonToAny(jsonObj!!, typeRefs<BehandleHendelseModel>())
-            hendelse.let {
-                lagringsService.lagreHendelseMedSakId(hendelse)
+
+            if (it != lagringsService.hentPathMedSakId(hendelse)) {
+                    lagringsService.lagreHendelseMedSakId(hendelse)
+            } else {
+                logger.info("Hendelsen finnes fra før, og opprettes dermed ikke")
+            }
+        }
+    }
+
+    @PostMapping("slettGamle")
+    fun deleteGamleoppforinger() {
+        val listPbuc01And03 = s3StorageService.list("P_BUC_01") + s3StorageService.list("P_BUC_03")
+        val lagringsService = LagringsService(s3StorageService)
+
+        listPbuc01And03.forEach {
+            val jsonObj = s3StorageService.get(it)
+            val hendelse = mapJsonToAny(jsonObj!!, typeRefs<BehandleHendelseModel>())
+
+            if (it == lagringsService.hentPath(hendelse)) {
+                s3StorageService.delete(it)
+            } else {
+                logger.info("Dette er riktig i forhold til nytt format")
             }
         }
     }

@@ -58,7 +58,7 @@ class LagringsService (private val s3StorageService: S3StorageService) {
         }
     }
 
-    private fun hentPath(hendelse: BehandleHendelseModel): String {
+    fun hentPath(hendelse: BehandleHendelseModel): String {
         val bucType = when (hendelse.hendelsesKode) {
             HendelseKode.SOKNAD_OM_UFORE -> "P_BUC_03"
             HendelseKode.SOKNAD_OM_ALDERSPENSJON -> "P_BUC_01"
