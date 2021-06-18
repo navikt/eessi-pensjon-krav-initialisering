@@ -55,30 +55,21 @@ class Listener(
         acknowledgment: Acknowledgment
     ) {
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
-            logger.info("Innkommet hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
-
+            logger.info("Melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
             try {
                 logger.debug("Hendelse : ${hendelse.toJson()}")
                 val hendelseModel: BehandleHendelseModel = mapJsonToAny(hendelse, typeRefs())
 
-                if (hendelseModel.hendelsesKode == HendelseKode.SOKNAD_OM_ALDERSPENSJON) {
-                    logger.debug("Hendelse krav ${hendelseModel.hendelsesKode}, bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
+                if (lagringsService.kanHendelsenOpprettes(hendelseModel)) {
+                    opprettKrav.measure {
+                        logger.info("Hendelse offset: ${cr.offset()}, finnes ikke fra før. Oppretter krav ${hendelseModel.hendelsesKode}, bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
 
-                    hendelseKlient.kallOpprettBehandleHendelse(hendelseModel)
-                }
-
-                if (hendelseModel.hendelsesKode == HendelseKode.SOKNAD_OM_UFORE) {
-                    if (lagringsService.kanHendelsenOpprettes(hendelseModel)) {
-                        opprettKrav.measure {
-                            logger.debug("Hendelse finnes ikke fra før. Oppretter krav bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
-
-                            hendelseKlient.kallOpprettBehandleHendelse(hendelseModel)
-                            lagringsService.lagreHendelseMedSakId(hendelseModel)
-                        }
-                    } else {
-                        opprettKravFinnes.measure {
-                            logger.debug("Hendelse finnes og krav er opprettet bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
-                        }
+                        hendelseKlient.kallOpprettBehandleHendelse(hendelseModel)
+                        lagringsService.lagreHendelseMedSakId(hendelseModel)
+                    }
+                } else {
+                    opprettKravFinnes.measure {
+                        logger.info("Hendelse offset: ${cr.offset()}, finnes fra før. Krav ${hendelseModel.hendelsesKode}, bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
                     }
                 }
 
