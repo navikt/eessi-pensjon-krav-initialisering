@@ -28,7 +28,7 @@ spec:
 
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-krav-initialisering.nais.preprod.local
+    - https://eessi-pensjon-krav-initialisering-q1.nais.preprod.local
   liveness:
     path: /internal/isalive
     port: 8080
