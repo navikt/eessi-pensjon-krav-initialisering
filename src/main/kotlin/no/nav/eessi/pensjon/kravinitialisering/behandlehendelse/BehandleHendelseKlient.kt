@@ -1,9 +1,11 @@
 package no.nav.eessi.pensjon.kravinitialisering.behandlehendelse
 
+import io.micrometer.core.instrument.Metrics
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModelPesys
+import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,8 +40,17 @@ class BehandleHendelseKlient(
                 hendelsesKode = hendelseModel.hendelsesKode,
                 beskrivelse = hendelseModel.beskrivelse
             ))
+            countKravinitSed(hendelseModel.hendelsesKode)
         } catch (ex: Exception) {
             logger.error(ex.message)
+        }
+    }
+
+    fun countKravinitSed(hendelsesKode: HendelseKode) {
+        try {
+            Metrics.counter("Kravinit_Sed", "type", hendelsesKode.name).increment()
+        } catch (e: Exception) {
+            logger.warn("Metrics feilet på type: $hendelsesKode")
         }
     }
 

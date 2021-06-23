@@ -2,11 +2,15 @@ package no.nav.eessi.pensjon.s3
 
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.*
+import com.amazonaws.services.s3.model.BucketVersioningConfiguration
+import com.amazonaws.services.s3.model.CannedAccessControlList
+import com.amazonaws.services.s3.model.CreateBucketRequest
+import com.amazonaws.services.s3.model.ListObjectsV2Request
+import com.amazonaws.services.s3.model.S3Object
+import com.amazonaws.services.s3.model.SetBucketVersioningConfigurationRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.annotation.Profile
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import java.io.BufferedReader
@@ -107,16 +111,7 @@ class S3StorageService(private val s3: AmazonS3){
             val s3Object = s3.getObject(getBucketName(), path)
             content = readS3Stream(s3Object)
             content
-        } catch (se: AmazonServiceException) {
-            if (se.statusCode == 404) {
-                logger.info("Objektet som forsøkes å hentes finnes ikke $se")
-                throw se
-            } else {
-                logger.error("En feil oppstod under henting av objekt ex: $se message: ${se.errorMessage} errorcode: ${se.errorCode}")
-                throw se
-            }
         } catch (ex: Exception) {
-            logger.error("En feil oppstod under henting av objekt ex: $ex")
             throw ex
         }
     }
