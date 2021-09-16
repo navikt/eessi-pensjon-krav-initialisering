@@ -14,18 +14,6 @@ s3_fss_url: "http://objectstore.rook-ceph.svc.nais.local"
 eessi_pensjon_krav_s3_bucket_name: 'eessipensjon'
 ENV: 'q2'
 
-spring:
-  kafka:
-    listener:
-      ack-mode: manual
-    consumer:
-      enable-auto-commit: false
-    bootstrap-servers: ${spring.embedded.kafka.brokers}
-    properties:
-      security.protocol: plaintext
-  main:
-    allow-bean-definition-overriding: true
-
 securitytokenservice:
   discoveryurl: http://localhost:${mockserverport}/.well-known/openid-configuration
 

@@ -6,12 +6,14 @@ metadata:
   labels:
     team: eessipensjon
 spec:
+  kafka:
+    pool: nav-prod
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
     - name: NAMESPACE
       value: p
-    - name: KAFKA_BOOTSTRAP_SERVERS_URL
+    - name: ONPREM_KAFKA_BOOTSTRAP_SERVERS_URL
       value: SASL_SSL://a01apvl00145.adeo.no:8443,SASL_SSL://a01apvl00146.adeo.no:8443,SASL_SSL://a01apvl00147.adeo.no:8443,SASL_SSL://a01apvl00149.adeo.no:8443
     - name: KRAV_INITIALISERING_TOPIC
       value: privat-eessipensjon-krav-initialisering

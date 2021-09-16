@@ -5,7 +5,6 @@ import no.nav.eessi.pensjon.json.mapJsonToAny
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.json.typeRefs
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
-import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.behandlehendelse.BehandleHendelseKlient
 import no.nav.eessi.pensjon.kravinitialisering.services.LagringsService
 import no.nav.eessi.pensjon.metrics.MetricsHelper
@@ -43,11 +42,9 @@ class Listener(
     }
 
     @KafkaListener(
-        id = "kravInitialiseringListener",
-        idIsGroup = false,
+        containerFactory = "onpremKafkaListenerContainerFactory",
         topics = ["\${kafka.krav.initialisering.topic}"],
         groupId = "\${kafka.krav.initialisering.groupid}",
-        autoStartup = "false"
     )
     fun consumeOpprettelseMelding(
         hendelse: String,

@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.kravinitialisering.integrationtest
 
+import IntegrasjonsTestConfig
 import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.AnonymousAWSCredentials
 import com.amazonaws.client.builder.AwsClientBuilder
@@ -46,12 +47,12 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.LocalDateTime
 import java.util.*
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
 private lateinit var mockServer: ClientAndServer
 
-@SpringBootTest
+@SpringBootTest(classes = [IntegrasjonsTestConfig::class], value = ["SPRING_PROFILES_ACTIVE", "integrationtest"])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EmbeddedKafka(
