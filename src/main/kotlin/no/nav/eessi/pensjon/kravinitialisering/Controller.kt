@@ -4,7 +4,9 @@ import no.nav.eessi.pensjon.json.mapJsonToAny
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.json.typeRefs
 import no.nav.eessi.pensjon.kravinitialisering.behandlehendelse.BehandleHendelseKlient
+import no.nav.eessi.pensjon.kravinitialisering.services.LagringsService
 import no.nav.eessi.pensjon.s3.S3StorageService
+import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -14,13 +16,26 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class Controller(private val hendelseKlient: BehandleHendelseKlient, private val s3StorageService: S3StorageService) {
 
-    @PostMapping("kravinit", consumes = ["application/json"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun prefillDocument(@RequestBody model: BehandleHendelseModel) {
+    private val logger = LoggerFactory.getLogger(Controller::class.java)
 
+    @PostMapping("kravinit", consumes = ["application/json"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun opprettKrav(@RequestBody model: BehandleHendelseModel) {
+        logger.info("Støtter kun ALDER ** oppretter ny alder")
         if (model.hendelsesKode == HendelseKode.SOKNAD_OM_ALDERSPENSJON) {
             hendelseKlient.kallOpprettBehandleHendelse(model)
         }
 
+    }
+
+    @PostMapping("slettkrav", consumes = ["application/json"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun slettKrav(@RequestBody model: BehandleHendelseModel) {
+        logger.info("Sletter model fra S3 ")
+
+        val lagringsService = LagringsService(s3StorageService)
+
+        val path = lagringsService.hentPathMedSakId(model)
+        s3StorageService.delete(path)
+        logger.info("Sletting ok!")
     }
 
     @GetMapping("bucs")
