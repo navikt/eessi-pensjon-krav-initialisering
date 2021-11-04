@@ -42,7 +42,7 @@ class Listener(
     }
 
     @KafkaListener(
-        containerFactory = "onpremKafkaListenerContainerFactory",
+        containerFactory = "aivenKafkaListenerContainerFactory",
         topics = ["\${kafka.krav.initialisering.topic}"],
         groupId = "\${kafka.krav.initialisering.groupid}",
     )
