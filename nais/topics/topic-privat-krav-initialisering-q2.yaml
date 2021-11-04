@@ -16,8 +16,8 @@ spec:
     retentionHours: -1  # -1 means unlimited
   acl:
     - team: eessipensjon
-      application: eessi-pensjon-krav-initialisering-q2
+      application: eessi-pensjon-journalforing-q2
       access: write   # read, write, readwrite
     - team: eessipensjon
       application: eessi-pensjon-krav-initialisering-q2
-      access: write
+      access: read
