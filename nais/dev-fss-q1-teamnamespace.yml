@@ -14,7 +14,7 @@ spec:
     - name: ONPREM_KAFKA_BOOTSTRAP_SERVERS_URL
       value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
     - name: KRAV_INITIALISERING_TOPIC
-      value: privat-eessipensjon-krav-initialisering-q1
+      value: eessipensjon.privat-krav-initialisering-q1
     - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
       value: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
     - name: SECURITYTOKENSERVICE_URL
