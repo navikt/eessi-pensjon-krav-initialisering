@@ -81,11 +81,11 @@ dependencies {
     testImplementation("org.mock-server:mockserver-netty:5.11.2") {
         exclude module: 'junit'
     }
-    testImplementation "io.mockk:mockk:1.10.0"
+    testImplementation "io.mockk:mockk:1.12.0"
 
 
     // Architecture tests
-    testImplementation 'com.tngtech.archunit:archunit:0.14.1'
+    testImplementation 'com.tngtech.archunit:archunit:0.11.0'
 
     implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.17")
 

@@ -13,7 +13,6 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.listener.ContainerProperties
-import org.springframework.kafka.support.serializer.JsonDeserializer
 import java.time.Duration
 
 @EnableKafka
@@ -28,17 +27,15 @@ class KafkaConfig(
 ) {
 
     fun aivenKafkaConsumerFactory(): ConsumerFactory<String, String> {
-        val keyDeserializer: JsonDeserializer<String> = JsonDeserializer(String::class.java)
-        keyDeserializer.setRemoveTypeHeaders(true)
-        keyDeserializer.addTrustedPackages("*")
-        keyDeserializer.setUseTypeHeaders(false)
-        val valueDeserializer = StringDeserializer()
         val configMap: MutableMap<String, Any> = HashMap()
         populerAivenCommonConfig(configMap)
         configMap[ConsumerConfig.CLIENT_ID_CONFIG] = "eessi-pensjon-krav-initialisering"
         configMap[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = aivenBootstrapServers
         configMap[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
-        return DefaultKafkaConsumerFactory(configMap, keyDeserializer, valueDeserializer)
+        configMap[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
+        configMap[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 1
+        return DefaultKafkaConsumerFactory(configMap, StringDeserializer(), StringDeserializer())
+
     }
 
     @Bean
