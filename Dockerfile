@@ -1,6 +1,6 @@
 FROM navikt/java:11-appdynamics
 
-COPY build/libs/eessi-pensjon-krav-initialisering-*.jar /app/app.jar
+COPY build/libs/eessi-pensjon-krav-initialisering-0.0.1-SNAPSHOT.jar /app/app.jar
 
 COPY nais/export-vault-secrets.sh /init-scripts/
 
