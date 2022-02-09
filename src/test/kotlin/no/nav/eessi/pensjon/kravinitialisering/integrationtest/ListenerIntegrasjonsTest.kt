@@ -7,13 +7,11 @@ import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.ninjasquad.springmockk.MockkBean
 import io.findify.s3mock.S3Mock
-import io.mockk.every
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
 import no.nav.eessi.pensjon.s3.S3StorageService
-import no.nav.eessi.pensjon.security.sts.STSService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -47,7 +45,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.LocalDateTime
 import java.util.*
-import java.util.concurrent.*
+import java.util.concurrent.TimeUnit
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
 private lateinit var mockServer: ClientAndServer
@@ -70,9 +68,6 @@ class ListenerIntegrasjonsTest {
     @MockkBean(name = "pensjonsinformasjonOidcRestTemplate")
     lateinit var restEuxTemplate: RestTemplate
 
-    @MockkBean
-    lateinit var stsService: STSService
-
     @Autowired
     private lateinit var s3StorageService: S3StorageService
 
@@ -84,7 +79,6 @@ class ListenerIntegrasjonsTest {
 
     @BeforeEach
     fun setup() {
-        every { stsService.getSystemOidcToken() } returns "something"
 
         container = settOppUtitlityConsumer(KRAV_INITIALISERING_TOPIC)
         container.start()

@@ -45,6 +45,8 @@ spec:
       value: eessipensjon.privat-krav-initialisering-q2
     - name: BEHANDLEHENDELSE_URL
       value: https://pensjon-pen-q2.nais.preprod.local/pen/api/behandlehendelse/utland/v1/
+    - name: AZURE_APP_PEN_CLIENT_ID
+      value: dev-fss.teampensjon.pensjon-pen-q2
     - name: GCP_STORAGE_API_URL
       value: https://storage.googleapis.com
     - name: ENV
