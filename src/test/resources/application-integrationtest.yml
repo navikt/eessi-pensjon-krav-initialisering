@@ -6,7 +6,7 @@ kafka:
 
 BUCKET_ACCESS_KEY: 'dummy'
 BUCKET_ACCESS_SECRET: 'dummy'
-GCP_STORAGE_API_URL: "http://localhost:${mockserverport}"
+GCP_STORAGE_API_URL: "http://some.strange.place"
 GCP_BUCKET_NAME: 'dummyBucket'
 
 nais_app_name: eessi-pensjon-journalforing

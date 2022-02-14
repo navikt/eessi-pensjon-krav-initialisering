@@ -18,7 +18,6 @@ import java.util.stream.Collectors.joining
 private val logger = LoggerFactory.getLogger(S3StorageService::class.java)
 
 @Component
-//@Profile("!integrationtest")
 class S3StorageService(private val s3: AmazonS3){
 
     @Value("\${GCP_BUCKET_NAME}")
@@ -35,7 +34,6 @@ class S3StorageService(private val s3: AmazonS3){
     fun init() {
         try {
             ensureBucketExists()
-            //ensureVersioningIsEnabled()
             logger.debug("S3-storage ready with bucket: ${getBucketName()}")
         } catch (e: Exception) {
             logger.warn("Failed to connect to or create bucket ${getBucketName()}", e)
