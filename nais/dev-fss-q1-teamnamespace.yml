@@ -5,7 +5,34 @@ metadata:
   namespace: eessipensjon
   labels:
     team: eessipensjon
+
 spec:
+  gcp:
+    buckets:
+      - name: eessi-pensjon-kravinit-dev-q1
+        retentionPeriodDays: 30
+        lifecycleCondition:
+          age: 7
+          createdBefore: 2020-01-01
+          numNewerVersions: 2
+          withState: ANY
+        uniformBucketLevelAccess: true
+    permissions:
+      - resource:
+          apiVersion: storagebuckets.storage.cnrm.cloud.google.com
+          kind: Project
+          name: eessipensjon
+        role: roles/storage.objectAdmin
+  envFrom:
+    - secret: statistikk # value is the secret name in Google Secret Manager
+  azure:
+    application:
+      enabled: true
+    accessPolicy:
+      outbound:
+        external:
+          - host: https://eessi-pensjon-krav-initialisering-q1.dev.intern.nav.no
+  webproxy: true
   kafka:
     pool: nav-dev
   env:
@@ -15,10 +42,6 @@ spec:
       value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
     - name: KRAV_INITIALISERING_TOPIC
       value: eessipensjon.privat-krav-initialisering-q1
-    - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
-      value: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
-    - name: SECURITYTOKENSERVICE_URL
-      value: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
     - name: S3_FSS_URL
       value: http://objectstore.rook-ceph.svc.nais.local
     - name: EESSI_PENSJON_KRAV_S3_CREDS_USERNAME
@@ -30,7 +53,7 @@ spec:
 
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-krav-initialisering-q1.nais.preprod.local
+    - https://eessi-pensjon-krav-initialisering-q1.dev.intern.nav.no
   liveness:
     path: /internal/isalive
     port: 8080
@@ -54,10 +77,3 @@ spec:
     requests:
       cpu: 400m
       memory: 4024Mi
-  vault:
-    enabled: true
-    paths:
-      - kvPath: {{serviceuserkv}}
-        mountPath: /var/run/secrets/nais.io/srveessipensjonkrav
-      - kvPath: {{appsecrets}}
-        mountPath: /var/run/secrets/nais.io/appcredentials

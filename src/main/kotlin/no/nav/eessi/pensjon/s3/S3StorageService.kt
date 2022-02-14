@@ -2,12 +2,10 @@ package no.nav.eessi.pensjon.s3
 
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.BucketVersioningConfiguration
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.CreateBucketRequest
 import com.amazonaws.services.s3.model.ListObjectsV2Request
 import com.amazonaws.services.s3.model.S3Object
-import com.amazonaws.services.s3.model.SetBucketVersioningConfigurationRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.event.ApplicationReadyEvent
@@ -23,60 +21,30 @@ private val logger = LoggerFactory.getLogger(S3StorageService::class.java)
 //@Profile("!integrationtest")
 class S3StorageService(private val s3: AmazonS3){
 
-    @Value("\${eessi.pensjon.krav.s3.bucket.name}")
+    @Value("\${GCP_BUCKET_NAME}")
     lateinit var bucketname: String
 
     @Value("\${ENV}")
     lateinit var env: String
 
     fun getBucketName(): String {
-        return bucketname + postfixFasitEnv()
-    }
-
-    private fun postfixFasitEnv(): String {
-        var environmentPostfix = "-$env"
-
-        // Det settes nå kun dfault i prod, namespace brukes i alle andre miljø
-        if (env.contains("p", true)) {
-            environmentPostfix = ""
-        }
-        return environmentPostfix
+        return bucketname
     }
 
     @EventListener(ApplicationReadyEvent::class)
     fun init() {
         try {
             ensureBucketExists()
-            ensureVersioningIsEnabled()
+            //ensureVersioningIsEnabled()
             logger.debug("S3-storage ready with bucket: ${getBucketName()}")
         } catch (e: Exception) {
             logger.warn("Failed to connect to or create bucket ${getBucketName()}", e)
         }
     }
 
-    private fun ensureVersioningIsEnabled() {
-        val versionConfig = s3.getBucketVersioningConfiguration(getBucketName())
-        logger.debug("Bucket versioning configuration status: ${versionConfig.status}")
-
-        if (versionConfig.status == "Enabled")
-            return
-
-        logger.debug("Enabling versioning on bucket ${getBucketName()}")
-        try {
-            val versioningConfiguration = BucketVersioningConfiguration().withStatus("Enabled")
-            val setBucketVersioningConfigurationRequest =
-                SetBucketVersioningConfigurationRequest(getBucketName(), versioningConfiguration)
-            s3.setBucketVersioningConfiguration(setBucketVersioningConfigurationRequest)
-        } catch (e: Exception) {
-            logger.error("Failed to create versioned S3 bucket: ${e.message}")
-            throw e
-        }
-    }
-
     private fun ensureBucketExists() {
         logger.debug("Checking if bucket exists")
-        val bucketExists = s3.listBuckets().stream()
-            .anyMatch { it.name == getBucketName() }
+        val bucketExists = s3.listBuckets().stream().anyMatch { it.name == getBucketName() }
         if (!bucketExists) {
             logger.debug("Bucket does not exist, creating new bucket")
             s3.createBucket(CreateBucketRequest(getBucketName()).withCannedAcl(CannedAccessControlList.Private))

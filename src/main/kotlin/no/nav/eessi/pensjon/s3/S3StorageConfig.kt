@@ -15,24 +15,21 @@ private val logger = LoggerFactory.getLogger(S3StorageConfig::class.java)
 @Configuration
 class S3StorageConfig {
 
-    @Value("\${eessi_pensjon_krav_s3_creds_username}")
+    @Value("\${GCP_ACCESS_KEY}")
     lateinit var accessKey: String
 
-    @Value("\${eessi_pensjon_krav_s3_creds_password}")
+    @Value("\${GCP_ACCESS_SECRET}")
     lateinit var secretKey: String
 
-    @Value("\${s3_fss_url}")
-    lateinit var s3Endpoint: String
-
-    @Value("\${s3_region}")
-    lateinit var s3Region: String
+    @Value("\${GCP_STORAGE_API_URL}")
+    lateinit var gcpStorageApiUrl: String
 
     @Bean
     fun s3(): AmazonS3 {
-        logger.info("Creating AmazonS3 standard client with endpoint: $s3Endpoint")
+        logger.info("Creating bucket standard client with endpoint: $gcpStorageApiUrl")
         val credentials = BasicAWSCredentials(accessKey, secretKey)
         return AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration(s3Endpoint, s3Region))
+                .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration(gcpStorageApiUrl, "auto"))
                 .enablePathStyleAccess()
                 .withCredentials(AWSStaticCredentialsProvider(credentials))
                 .build()

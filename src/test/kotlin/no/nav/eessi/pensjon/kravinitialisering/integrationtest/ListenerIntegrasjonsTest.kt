@@ -5,15 +5,17 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.AnonymousAWSCredentials
 import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
-import com.ninjasquad.springmockk.MockkBean
 import io.findify.s3mock.S3Mock
-import io.mockk.every
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
 import no.nav.eessi.pensjon.s3.S3StorageService
-import no.nav.eessi.pensjon.security.sts.STSService
+import org.apache.http.conn.ssl.NoopHostnameVerifier
+import org.apache.http.impl.client.CloseableHttpClient
+import org.apache.http.impl.client.HttpClients
+import org.apache.http.ssl.SSLContexts
+import org.apache.http.ssl.TrustStrategy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,13 +24,16 @@ import org.mockserver.model.Header
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.HttpStatusCode
+import org.mockserver.socket.PortFactory
 import org.mockserver.verify.VerificationTimes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
@@ -43,16 +48,16 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
 import java.net.ServerSocket
-import java.nio.file.Files
-import java.nio.file.Paths
+import java.security.cert.X509Certificate
 import java.time.LocalDateTime
-import java.util.*
-import java.util.concurrent.*
+import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLContext
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
 private lateinit var mockServer: ClientAndServer
+private var mockServerPort = PortFactory.findFreePort()
 
-@SpringBootTest(classes = [IntegrasjonsTestConfig::class], value = ["SPRING_PROFILES_ACTIVE", "integrationtest"])
+@SpringBootTest(classes = [IntegrasjonsTestConfig::class, ListenerIntegrasjonsTest.TestConfig::class], value = ["SPRING_PROFILES_ACTIVE", "integrationtest"])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EmbeddedKafka(
@@ -67,13 +72,6 @@ class ListenerIntegrasjonsTest {
     @Autowired
     lateinit var embeddedKafka: EmbeddedKafkaBroker
 
-    @MockkBean(name = "pensjonsinformasjonOidcRestTemplate")
-    lateinit var restEuxTemplate: RestTemplate
-
-    @MockkBean
-    lateinit var stsService: STSService
-
-    @Autowired
     private lateinit var s3StorageService: S3StorageService
 
     @Autowired
@@ -84,7 +82,6 @@ class ListenerIntegrasjonsTest {
 
     @BeforeEach
     fun setup() {
-        every { stsService.getSystemOidcToken() } returns "something"
 
         container = settOppUtitlityConsumer(KRAV_INITIALISERING_TOPIC)
         container.start()
@@ -129,7 +126,7 @@ class ListenerIntegrasjonsTest {
         )
 
         val mockModelUtenOpprettdato =
-        """
+            """
         {            
             "sakId" : "1231231111",
             "bucId" : "3231231",
@@ -202,21 +199,9 @@ class ListenerIntegrasjonsTest {
 
         init {
             // Start Mockserver in memory
-            val port = randomFrom()
-            mockServer = ClientAndServer.startClientAndServer(port)
-            System.setProperty("mockServerport", port.toString())
-            // Mocker STS
-            mockServer.`when`(
-                HttpRequest.request()
-                    .withMethod(HttpMethod.GET.name)
-                    .withQueryStringParameter("grant_type", "client_credentials")
-            )
-                .respond(
-                    HttpResponse.response()
-                        .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
-                        .withStatusCode(HttpStatusCode.OK_200.code())
-                        .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/STStoken.json"))))
-                )
+
+            mockServer = ClientAndServer.startClientAndServer(mockServerPort)
+            System.setProperty("mockServerport", mockServerPort.toString())
 
             mockServer.`when`(
                 HttpRequest.request()
@@ -229,12 +214,6 @@ class ListenerIntegrasjonsTest {
                         .withStatusCode(HttpStatusCode.OK_200.code())
                         .withBody("{}")
                 )
-        }
-
-
-        private fun randomFrom(from: Int = 1024, to: Int = 65535): Int {
-            val random = Random()
-            return random.nextInt(to - from) + from
         }
 
         fun initMockS3(): S3StorageService {
@@ -265,13 +244,28 @@ class ListenerIntegrasjonsTest {
     @Profile("integrationtest")
     @TestConfiguration
     class TestConfig {
+
         @Bean
-        fun s3StorageService(): S3StorageService {
-            println("InintMock S3")
-            return initMockS3()
+        fun penAzureTokenRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
+            val acceptingTrustStrategy = TrustStrategy { chain: Array<X509Certificate?>?, authType: String? -> true }
+
+            val sslContext: SSLContext = SSLContexts.custom()
+                .loadTrustMaterial(null, acceptingTrustStrategy)
+                .build()
+
+            val httpClient: CloseableHttpClient = HttpClients.custom()
+                .setSSLContext(sslContext)
+                .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                .build()
+
+            val customRequestFactory = HttpComponentsClientHttpRequestFactory()
+            customRequestFactory.httpClient = httpClient
+
+            return RestTemplateBuilder()
+                .rootUri("https://localhost:${mockServerPort}")
+                .build().apply {
+                    requestFactory = customRequestFactory
+                }
         }
     }
-
-
-
 }

@@ -1,21 +1,13 @@
-
+ENV: 'q2'
 kafka:
   krav.initialisering:
     topic: eessi-pensjon-krav-initialisering
     groupid: eessi-pensjon-krav-initialisering-group
 
-eessi_pensjon_krav_s3_creds_username: 'dummy'
-eessi_pensjon_krav_s3_creds_password: 'dummy'
-
-s3_url: 'http://objectstore.rook-ceph.svc.nais.local'
-s3_region: 'us-east-1'
-s3_fss_url: "http://objectstore.rook-ceph.svc.nais.local"
-
-eessi_pensjon_krav_s3_bucket_name: 'eessipensjon'
-ENV: 'q2'
-
-securitytokenservice:
-  discoveryurl: http://localhost:${mockserverport}/.well-known/openid-configuration
+GCP_ACCESS_KEY: 'dummy'
+GCP_ACCESS_SECRET: 'dummy'
+GCP_STORAGE_API_URL: "http://objectstore.rook-ceph.svc.nais.local"
+GCP_BUCKET_NAME: 'dummyBucket'
 
 nais_app_name: eessi-pensjon-journalforing
 eux_rina_api_v1_url: http://localhost:${mockserverport}
@@ -25,8 +17,6 @@ srvpassword: somepass
 oppgave.oppgaver.url: http://localhost:${mockserverport}
 journalpost_v1_url: http://localhost:${mockserverport}
 aktoerregister.api.v1.url: http://localhost:${mockserverport}
-virksomhet.person.v3:
-  endpointurl: http://localhost:${mockserverport}
 eessi_pensjon_fagmodul_url: http://localhost:${mockserverport}
 norg2_url: http://localhost:${mockserverport}
 bestemsak_url: http://localhost:${mockserverport}

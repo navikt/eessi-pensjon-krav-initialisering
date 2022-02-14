@@ -19,7 +19,7 @@ import javax.annotation.PostConstruct
 
 @Component
 class BehandleHendelseKlient(
-    private val penBehandleHendelseOidcRestTemplate: RestTemplate,
+    private val penAzureTokenRestTemplate: RestTemplate,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
 ) {
 
@@ -63,7 +63,7 @@ class BehandleHendelseKlient(
                 val httpEntity = HttpEntity(model.toJson(), headers)
                 logger.debug("*** legger følgende melding på behandlehendlse tjenesten: ${model.toJson()} ***")
 
-                penBehandleHendelseOidcRestTemplate.postForEntity(
+                penAzureTokenRestTemplate.postForEntity(
                     "/",
                     httpEntity,
                     String::class.java

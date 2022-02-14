@@ -22,5 +22,4 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
           RESOURCE: nais/dev-fss-q1-teamnamespace.yml
-          VARS: nais/dev-fss-q1.json
           IMAGE: ${{ github.event.client_payload.image }}
