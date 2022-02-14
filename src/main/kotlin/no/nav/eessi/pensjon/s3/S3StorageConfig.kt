@@ -15,10 +15,10 @@ private val logger = LoggerFactory.getLogger(S3StorageConfig::class.java)
 @Configuration
 class S3StorageConfig {
 
-    @Value("\${GCP_ACCESS_KEY}")
+    @Value("\${BUCKET_ACCESS_KEY}")
     lateinit var accessKey: String
 
-    @Value("\${GCP_ACCESS_SECRET}")
+    @Value("\${BUCKET_ACCESS_SECRET}")
     lateinit var secretKey: String
 
     @Value("\${GCP_STORAGE_API_URL}")

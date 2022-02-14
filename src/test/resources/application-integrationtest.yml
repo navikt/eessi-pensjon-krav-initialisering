@@ -4,9 +4,9 @@ kafka:
     topic: eessi-pensjon-krav-initialisering
     groupid: eessi-pensjon-krav-initialisering-group
 
-GCP_ACCESS_KEY: 'dummy'
-GCP_ACCESS_SECRET: 'dummy'
-GCP_STORAGE_API_URL: "http://objectstore.rook-ceph.svc.nais.local"
+BUCKET_ACCESS_KEY: 'dummy'
+BUCKET_ACCESS_SECRET: 'dummy'
+GCP_STORAGE_API_URL: "http://localhost:${mockserverport}"
 GCP_BUCKET_NAME: 'dummyBucket'
 
 nais_app_name: eessi-pensjon-journalforing

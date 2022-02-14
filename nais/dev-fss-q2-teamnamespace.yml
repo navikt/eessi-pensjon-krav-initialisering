@@ -25,7 +25,7 @@ spec:
           name: eessipensjon
         role: roles/storage.objectAdmin
   envFrom:
-    - secret: statistikk # value is the secret name in Google Secret Manager
+    - secret: krav-initialisering # value is the secret name in Google Secret Manager
   azure:
     application:
       enabled: true
