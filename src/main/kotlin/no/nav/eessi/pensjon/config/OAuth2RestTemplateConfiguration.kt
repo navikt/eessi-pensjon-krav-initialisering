@@ -32,7 +32,7 @@ class OAuth2RestTemplateConfiguration(@Value("\${BEHANDLEHENDELSE_URL}") private
         clientConfigurationProperties: ClientConfigurationProperties,
         oAuth2AccessTokenService: OAuth2AccessTokenService
     ): RestTemplate? {
-        val clientProperties = Optional.ofNullable(clientConfigurationProperties.registration["eux-credentials"])
+        val clientProperties = Optional.ofNullable(clientConfigurationProperties.registration["pen-credentials"])
                 .orElseThrow { RuntimeException("could not find oauth2 client config for example-onbehalfof") }
         return restTemplateBuilder
             .rootUri(penUrl)
