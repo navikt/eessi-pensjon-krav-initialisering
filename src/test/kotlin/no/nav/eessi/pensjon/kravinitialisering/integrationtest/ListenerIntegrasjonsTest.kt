@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import io.findify.s3mock.S3Mock
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
+import no.nav.eessi.pensjon.kravinitialisering.EessiPensjonKravInitialiseringTestApplication
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
 import no.nav.eessi.pensjon.s3.S3StorageService
@@ -57,7 +58,7 @@ private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering
 private lateinit var mockServer: ClientAndServer
 private var mockServerPort = PortFactory.findFreePort()
 
-@SpringBootTest(classes = [IntegrasjonsTestConfig::class, ListenerIntegrasjonsTest.TestConfig::class], value = ["SPRING_PROFILES_ACTIVE", "integrationtest"])
+@SpringBootTest(classes = [IntegrasjonsTestConfig::class, ListenerIntegrasjonsTest.TestConfig::class, EessiPensjonKravInitialiseringTestApplication::class], value = ["SPRING_PROFILES_ACTIVE", "integrationtest"])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EmbeddedKafka(
@@ -71,8 +72,6 @@ class ListenerIntegrasjonsTest {
     @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     lateinit var embeddedKafka: EmbeddedKafkaBroker
-
-    private lateinit var s3StorageService: S3StorageService
 
     @Autowired
     lateinit var listener: Listener
@@ -142,19 +141,18 @@ class ListenerIntegrasjonsTest {
 
         listener.getLatch().await(5000, TimeUnit.MILLISECONDS)
 
-        verify()
+        verifyPostRequests(5)
 
     }
 
-    private fun verify() {
+    private fun verifyPostRequests(antallPosts: Int) {
 
         mockServer.verify(
             HttpRequest.request()
                 .withMethod(HttpMethod.POST.name)
                 .withPath("/"),
-            VerificationTimes.exactly(4)
+            VerificationTimes.exactly(antallPosts)
         )
-
     }
 
     private fun sendMelding(melding: BehandleHendelseModel) {
@@ -244,6 +242,11 @@ class ListenerIntegrasjonsTest {
     @Profile("integrationtest")
     @TestConfiguration
     class TestConfig {
+
+        @Bean
+        fun s3StorageService (): S3StorageService{
+           return initMockS3()
+        }
 
         @Bean
         fun penAzureTokenRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {

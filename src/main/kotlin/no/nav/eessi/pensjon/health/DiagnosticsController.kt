@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.health
 
+import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -9,6 +10,7 @@ import java.time.Instant
 
 
 @RestController
+@Unprotected
 class DiagnosticsController {
 
     private val logger: Logger by lazy { LoggerFactory.getLogger(DiagnosticsController::class.java) }
