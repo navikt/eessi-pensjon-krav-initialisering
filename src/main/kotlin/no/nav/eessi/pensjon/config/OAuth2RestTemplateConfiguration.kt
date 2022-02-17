@@ -21,7 +21,7 @@ import java.util.*
 
 @Profile("prod", "test")
 @Configuration
-class OAuth2RestTemplateConfiguration(@Value("\${BEHANDLEHENDELSE_URL}") private val penUrl: String) {
+class OAuth2RestTemplateConfiguration(@Value("\${PEN_BEHANDLEHENDELSE_URL}") private val penUrl: String) {
 
     /**
      * Create one RestTemplate per OAuth2 client entry to separate between different scopes per API

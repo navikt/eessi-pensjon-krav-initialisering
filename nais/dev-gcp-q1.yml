@@ -1,16 +1,15 @@
 kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
-  name: eessi-pensjon-krav-initialisering-q2
+  name: eessi-pensjon-krav-initialisering-q1
   namespace: eessipensjon
   labels:
     team: eessipensjon
+
 spec:
-  kafka:
-    pool: nav-dev
   gcp:
     buckets:
-      - name: eessi-pensjon-kravinit-dev-q2
+      - name: eessi-pensjon-kravinit-dev-q1
         retentionPeriodDays: 30
         lifecycleCondition:
           age: 7
@@ -25,36 +24,36 @@ spec:
           name: eessipensjon
         role: roles/storage.objectAdmin
   envFrom:
-    - secret: krav-initialisering # value is the secret name in Google Secret Manager
+    - secret: statistikk # value is the secret name in Google Secret Manager
   azure:
     application:
       enabled: true
     accessPolicy:
       outbound:
         external:
-          - host: https://eessi-pensjon-krav-initialisering-q2.dev.intern.nav.no
+          - host: https://eessi-pensjon-krav-initialisering-q1.dev.intern.nav.no
   webproxy: true
+  kafka:
+    pool: nav-dev
   env:
-    - name: GCP_BUCKET_NAME
-      value: eessi-pensjon-kravinit-dev-q2
     - name: SPRING_PROFILES_ACTIVE
       value: test
     - name: ONPREM_KAFKA_BOOTSTRAP_SERVERS_URL
       value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
     - name: KRAV_INITIALISERING_TOPIC
-      value: eessipensjon.privat-krav-initialisering-q2
-    - name: BEHANDLEHENDELSE_URL
-      value: https://pensjon-pen-q2.dev-fss.nais.io/pen/api/behandlehendelse/utland/v1/
-    - name: AZURE_APP_PEN_CLIENT_ID
-      value: dev-fss.teampensjon.pensjon-pen-q2
-    - name: GCP_STORAGE_API_URL
-      value: https://storage.googleapis.com
+      value: eessipensjon.privat-krav-initialisering-q1
+    - name: S3_FSS_URL
+      value: http://objectstore.rook-ceph.svc.nais.local
+    - name: EESSI_PENSJON_KRAV_S3_CREDS_USERNAME
+      value: H1IXJNC11DU9UEFSI1VB
     - name: ENV
-      value: q2
+      value: q1
+    - name: PEN_BEHANDLEHENDELSE_URL
+      value: https://pensjon-pen-q1.nais.preprod.local/pen/api/behandlehendelse/utland/v1/
 
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-krav-initialisering-q2.dev.intern.nav.no
+    - https://eessi-pensjon-krav-initialisering-q1.dev.intern.nav.no
   liveness:
     path: /internal/isalive
     port: 8080

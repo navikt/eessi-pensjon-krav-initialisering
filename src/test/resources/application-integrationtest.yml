@@ -24,4 +24,4 @@ bestemsak_url: http://localhost:${mockserverport}
 pensjonsinformasjon:
   url: 'http://example.com:8099'
 
-BEHANDLEHENDELSE_URL: http://localhost:${mockserverport}
+PEN_BEHANDLEHENDELSE_URL: http://localhost:${mockserverport}

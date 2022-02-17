@@ -23,7 +23,7 @@ spec:
       value: B4FVJDTJNT7S07IJ2ELC
     - name: ENV
       value: prod
-    - name: BEHANDLEHENDELSE_URL
+    - name: PEN_BEHANDLEHENDELSE_URL
       value: https://pensjon-pen.nais.adeo.no/pen/api/behandlehendelse/utland/v1/
 
   image: {{ image }}
