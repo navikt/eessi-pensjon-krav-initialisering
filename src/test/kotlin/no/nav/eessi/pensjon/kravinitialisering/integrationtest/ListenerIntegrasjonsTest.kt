@@ -51,7 +51,7 @@ import org.springframework.web.client.RestTemplate
 import java.net.ServerSocket
 import java.security.cert.X509Certificate
 import java.time.LocalDateTime
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 import javax.net.ssl.SSLContext
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
@@ -231,7 +231,6 @@ class ListenerIntegrasjonsTest {
             //return s3MockClient
             val storageService = S3StorageService(s3MockClient)
             storageService.bucketname = "eessipensjon"
-            storageService.env = "q1"
             storageService.init()
             return storageService
         }

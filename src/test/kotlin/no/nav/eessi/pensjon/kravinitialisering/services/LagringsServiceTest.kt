@@ -40,7 +40,6 @@ internal class LagringsServiceTest {
         s3MockClient.createBucket("eessipensjon")
         storageService = S3StorageService(s3MockClient)
         storageService.bucketname = "eessipensjon"
-        storageService.env = "q1"
         storageService.init()
 
         lagringsService = LagringsService(storageService)

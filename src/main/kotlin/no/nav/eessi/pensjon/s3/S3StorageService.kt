@@ -19,7 +19,7 @@ private val logger = LoggerFactory.getLogger(S3StorageService::class.java)
 class S3StorageService(private val s3: AmazonS3){
 
     @Value("\${GCP_BUCKET_NAME}")
-    private lateinit var bucketname: String
+    lateinit var bucketname: String
 
     fun getBucketName(): String {
         return bucketname
