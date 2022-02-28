@@ -26,12 +26,12 @@ class S3StorageConfig {
 
     @Bean
     fun s3(): AmazonS3 {
-        logger.info("Creating bucket standard client with endpoint: $gcpStorageApiUrl")
+        logger.info("Creating AmazonS3 standard client with endpoint: $gcpStorageApiUrl")
         val credentials = BasicAWSCredentials(accessKey, secretKey)
         return AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration(gcpStorageApiUrl, "auto"))
-                .enablePathStyleAccess()
-                .withCredentials(AWSStaticCredentialsProvider(credentials))
-                .build()
+            .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration(gcpStorageApiUrl, "auto"))
+            .enablePathStyleAccess()
+            .withCredentials(AWSStaticCredentialsProvider(credentials))
+            .build()
     }
 }

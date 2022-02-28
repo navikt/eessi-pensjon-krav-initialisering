@@ -24,6 +24,7 @@ spec:
           kind: Project
           name: eessipensjon
         role: roles/storage.objectAdmin
+
   envFrom:
     - secret: krav-initialisering-prod # value is the secret name in Google Secret Manager
   azure:

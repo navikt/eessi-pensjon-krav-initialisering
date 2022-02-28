@@ -2,8 +2,6 @@ package no.nav.eessi.pensjon.s3
 
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.CannedAccessControlList
-import com.amazonaws.services.s3.model.CreateBucketRequest
 import com.amazonaws.services.s3.model.ListObjectsV2Request
 import com.amazonaws.services.s3.model.S3Object
 import org.slf4j.LoggerFactory
@@ -21,10 +19,7 @@ private val logger = LoggerFactory.getLogger(S3StorageService::class.java)
 class S3StorageService(private val s3: AmazonS3){
 
     @Value("\${GCP_BUCKET_NAME}")
-    lateinit var bucketname: String
-
-    @Value("\${ENV}")
-    lateinit var env: String
+    private lateinit var bucketname: String
 
     fun getBucketName(): String {
         return bucketname
@@ -45,7 +40,7 @@ class S3StorageService(private val s3: AmazonS3){
         val bucketExists = s3.listBuckets().stream().anyMatch { it.name == getBucketName() }
         if (!bucketExists) {
             logger.debug("Bucket does not exist, creating new bucket")
-            s3.createBucket(CreateBucketRequest(getBucketName()).withCannedAcl(CannedAccessControlList.Private))
+            //s3.createBucket(CreateBucketRequest(getBucketName()).withCannedAcl(CannedAccessControlList.Private))
         }
     }
 
