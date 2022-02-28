@@ -51,7 +51,7 @@ spec:
     - name: AZURE_APP_PROXY_CLIENT_ID
       value: prod-fss.eessipensjon.eessi-pensjon-onprem-proxy
     - name: ENV
-      value: nav-prod
+      value: p
 
   image: {{ image }}
   ingresses:
