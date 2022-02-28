@@ -1,15 +1,16 @@
 kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
-  name: eessi-pensjon-krav-initialisering-q1
+  name: eessi-pensjon-krav-initialisering
   namespace: eessipensjon
   labels:
     team: eessipensjon
-
 spec:
+  kafka:
+    pool: nav-prod
   gcp:
     buckets:
-      - name: eessi-pensjon-kravinit-dev-q1
+      - name: eessi-pensjon-krav-init-prod
         retentionPeriodDays: 30
         lifecycleCondition:
           age: 7
@@ -24,38 +25,36 @@ spec:
           name: eessipensjon
         role: roles/storage.objectAdmin
   envFrom:
-    - secret: krav-initialisering # value is the secret name in Google Secret Manager
+    - secret: krav-initialisering-prod # value is the secret name in Google Secret Manager
   azure:
     application:
       enabled: true
   accessPolicy:
     outbound:
       external:
-        - host: https://eessi-pensjon-krav-initialisering-q1.dev.intern.nav.no
+        - host: https://eessi-pensjon-krav-initialisering.intern.nav.no
   webproxy: true
-  kafka:
-    pool: nav-dev
   env:
+    - name: GCP_BUCKET_NAME
+      value: eessi-pensjon-krav-init-prod
     - name: SPRING_PROFILES_ACTIVE
-      value: test
-    - name: ONPREM_KAFKA_BOOTSTRAP_SERVERS_URL
-      value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
+      value: prod
     - name: KRAV_INITIALISERING_TOPIC
-      value: eessipensjon.privat-krav-initialisering-q1
-    - name: S3_FSS_URL
-      value: http://objectstore.rook-ceph.svc.nais.local
-    - name: EESSI_PENSJON_KRAV_S3_CREDS_USERNAME
-      value: H1IXJNC11DU9UEFSI1VB
+      value: eessipensjon.privat-krav-initialisering
     - name: PEN_BEHANDLEHENDELSE_URL
-      value: https://pensjon-pen-q1.nais.preprod.local/pen/api/behandlehendelse/utland/v1/
+      value: https://eessi-pensjon-onprem-proxy.prod-fss-pub.nais.io/pen/api/behandlehendelse/utland/v1/
+    - name: GCP_STORAGE_API_URL
+      value: https://storage.googleapis.com
+    - name: EESSI_PEN_ONPREM_PROXY_URL
+      value: https://eessi-pensjon-onprem-proxy.prod-fss-pub.nais.io
     - name: AZURE_APP_PROXY_CLIENT_ID
-      value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q1
+      value: prod-fss.eessipensjon.eessi-pensjon-onprem-proxy
     - name: ENV
-      value: q1
+      value: nav-prod
 
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-krav-initialisering-q1.dev.intern.nav.no
+    - https://eessi-pensjon-krav-initialisering.intern.nav.no
   liveness:
     path: /internal/isalive
     port: 8080
