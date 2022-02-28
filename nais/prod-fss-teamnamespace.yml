@@ -21,10 +21,12 @@ spec:
       value:
     - name: EESSI_PENSJON_KRAV_S3_CREDS_USERNAME
       value: B4FVJDTJNT7S07IJ2ELC
-    - name: ENV
-      value: prod
     - name: PEN_BEHANDLEHENDELSE_URL
       value: https://pensjon-pen.nais.adeo.no/pen/api/behandlehendelse/utland/v1/
+    - name: AZURE_APP_PROXY_CLIENT_ID
+      value: prod-fss.eessipensjon.eessi-pensjon-onprem-proxy
+    - name: ENV
+      value: prod
 
   image: {{ image }}
   ingresses:

@@ -46,10 +46,12 @@ spec:
       value: http://objectstore.rook-ceph.svc.nais.local
     - name: EESSI_PENSJON_KRAV_S3_CREDS_USERNAME
       value: H1IXJNC11DU9UEFSI1VB
-    - name: ENV
-      value: q1
     - name: PEN_BEHANDLEHENDELSE_URL
       value: https://pensjon-pen-q1.nais.preprod.local/pen/api/behandlehendelse/utland/v1/
+    - name: AZURE_APP_PROXY_CLIENT_ID
+      value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q1
+    - name: ENV
+      value: q1
 
   image: {{ image }}
   ingresses:

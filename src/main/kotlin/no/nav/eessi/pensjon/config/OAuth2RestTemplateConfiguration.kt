@@ -32,7 +32,7 @@ class OAuth2RestTemplateConfiguration(@Value("\${PEN_BEHANDLEHENDELSE_URL}") pri
         clientConfigurationProperties: ClientConfigurationProperties,
         oAuth2AccessTokenService: OAuth2AccessTokenService
     ): RestTemplate? {
-        val clientProperties = Optional.ofNullable(clientConfigurationProperties.registration["pen-credentials"])
+        val clientProperties = Optional.ofNullable(clientConfigurationProperties.registration["proxy-credentials"])
                 .orElseThrow { RuntimeException("could not find oauth2 client config for example-onbehalfof") }
         return restTemplateBuilder
             .rootUri(penUrl)
