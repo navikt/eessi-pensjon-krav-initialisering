@@ -36,12 +36,6 @@ spec:
           numNewerVersions: 2
           withState: ANY
         uniformBucketLevelAccess: true
-    permissions:
-      - resource:
-          apiVersion: storagebuckets.storage.cnrm.cloud.google.com
-          kind: Project
-          name: eessipensjon
-        role: roles/storage.objectAdmin
 
   envFrom:
     - secret: krav-initialisering-prod # value is the secret name in Google Secret Manager
