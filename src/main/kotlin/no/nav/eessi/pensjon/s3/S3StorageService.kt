@@ -13,7 +13,7 @@ import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.util.stream.Collectors.*
+import java.util.stream.Collectors.joining
 
 private val logger = LoggerFactory.getLogger(S3StorageService::class.java)
 
@@ -39,7 +39,7 @@ class S3StorageService(private val s3: AmazonS3){
 
     private fun ensureBucketExists() {
         logger.debug("Checking if bucket exists")
-        s3.listBuckets().map { logger.info("s3 Bucketname: ${it.name}") }
+        s3.listBuckets().map { logger.info("s3 Bucketname: ${it.name}, owner: ${it.owner}") }
         val bucketExists = s3.listBuckets().stream().anyMatch { it.name == getBucketName() }
         if (!bucketExists) {
             logger.info("Bucket: ${getBucketName()} does not exist.")
