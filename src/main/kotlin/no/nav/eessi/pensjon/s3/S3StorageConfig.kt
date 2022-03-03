@@ -1,3 +1,4 @@
+/*
 package no.nav.eessi.pensjon.s3
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider
@@ -33,3 +34,4 @@ class S3StorageConfig {
             .build()
     }
 }
+*/

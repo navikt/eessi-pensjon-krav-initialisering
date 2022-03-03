@@ -1,3 +1,4 @@
+/*
 package no.nav.eessi.pensjon.s3
 
 import com.amazonaws.AmazonServiceException
@@ -47,11 +48,13 @@ class S3StorageService(private val s3: AmazonS3){
         }
     }
 
-    /**
+    */
+/**
      * Lister objekter med prefix $path, path må begynne med fnr/dnr dersom innlogget bruker er borger
      *
      * @param path
-     */
+     *//*
+
     fun list(path: String): List<String> {
         return try {
             val list = mutableListOf<String>()
@@ -92,12 +95,14 @@ class S3StorageService(private val s3: AmazonS3){
         }
     }
 
-    /**
+    */
+/**
      * Lagrer nytt S3 objekt.
      *
      * @param path <fnr/dnr/ad-bruker>___<valgfri filending>
      * @param content innholdet i objektet
-     */
+     *//*
+
     fun put(path: String, content: String) {
         try {
             s3.putObject(getBucketName(), path, content)
@@ -125,3 +130,4 @@ class S3StorageService(private val s3: AmazonS3){
         return content
     }
 }
+*/

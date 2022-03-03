@@ -1,16 +1,16 @@
 package no.nav.eessi.pensjon.kravinitialisering.services
 
+import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.json.mapJsonToAny
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.json.typeRefs
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
-import no.nav.eessi.pensjon.s3.S3StorageService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class LagringsService (private val s3StorageService: S3StorageService) {
+class LagringsService (private val gcpStorageService: GcpStorageService) {
 
     private val logger = LoggerFactory.getLogger(LagringsService::class.java)
 
@@ -21,7 +21,8 @@ class LagringsService (private val s3StorageService: S3StorageService) {
             val jsondata = hendelse.toJson()
 
             logger.debug("Lagrer hendelse: $path, data: $jsondata")
-            s3StorageService.put(path, jsondata)
+            gcpStorageService.lagre(path, jsondata)
+            //s3StorageService.put(path, jsondata)
         } catch (ex: Exception) {
             logger.error("Feiler ved lagring av data: $path")
         }
@@ -34,10 +35,11 @@ class LagringsService (private val s3StorageService: S3StorageService) {
         logger.info("Henter sakId: ${hendelse.sakId} from $path")
 
         return try {
-            val hendelseModel = s3StorageService.get(path)
+            //val hendelseModel = s3StorageService.get(path)
+            val hendelseModel = gcpStorageService.hent(path)
 
             logger.debug("Henter hendelse fra: $path, data: $hendelseModel")
-            hendelseModel?.let { mapJsonToAny(it, typeRefs()) }
+            mapJsonToAny(hendelseModel, typeRefs())
 
         } catch (ex: Exception) {
             logger.info("Feiler ved henting av data : $path")

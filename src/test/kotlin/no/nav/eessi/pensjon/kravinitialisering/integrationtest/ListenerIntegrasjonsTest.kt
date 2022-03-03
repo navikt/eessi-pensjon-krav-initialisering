@@ -1,17 +1,11 @@
 package no.nav.eessi.pensjon.kravinitialisering.integrationtest
 
 import IntegrasjonsTestConfig
-import com.amazonaws.auth.AWSStaticCredentialsProvider
-import com.amazonaws.auth.AnonymousAWSCredentials
-import com.amazonaws.client.builder.AwsClientBuilder
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
-import io.findify.s3mock.S3Mock
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.EessiPensjonKravInitialiseringTestApplication
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
-import no.nav.eessi.pensjon.s3.S3StorageService
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
@@ -19,6 +13,7 @@ import org.apache.http.ssl.SSLContexts
 import org.apache.http.ssl.TrustStrategy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.Header
@@ -48,10 +43,9 @@ import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
-import java.net.ServerSocket
 import java.security.cert.X509Certificate
 import java.time.LocalDateTime
-import java.util.concurrent.*
+import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLContext
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
@@ -67,6 +61,7 @@ private var mockServerPort = PortFactory.findFreePort()
     topics = [KRAV_INITIALISERING_TOPIC],
     brokerProperties = ["log.dir=out/embedded-kafkamottatt"]
 )
+@Disabled
 class ListenerIntegrasjonsTest {
 
     @Suppress("SpringJavaInjectionPointsAutowiringInspection")
@@ -214,7 +209,7 @@ class ListenerIntegrasjonsTest {
                 )
         }
 
-        fun initMockS3(): S3StorageService {
+/*        fun initMockS3(): S3StorageService {
             val s3Port = ServerSocket(0).use { it.localPort }
 
             val s3api = S3Mock.Builder().withPort(s3Port).withInMemoryBackend().build()
@@ -233,7 +228,7 @@ class ListenerIntegrasjonsTest {
             storageService.bucketname = "eessipensjon"
             storageService.init()
             return storageService
-        }
+        }*/
     }
 
     // Mocks PDL-PersonService and EuxService
@@ -241,11 +236,6 @@ class ListenerIntegrasjonsTest {
     @Profile("integrationtest")
     @TestConfiguration
     class TestConfig {
-
-        @Bean
-        fun s3StorageService (): S3StorageService{
-           return initMockS3()
-        }
 
         @Bean
         fun penAzureTokenRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
