@@ -28,24 +28,30 @@ class LagringsService (private val gcpStorageService: GcpStorageService) {
         }
     }
 
-    fun kanHendelsenOpprettes(hendelseModel: BehandleHendelseModel) = hentHendelse(hendelseModel) == null
+    fun kanHendelsenOpprettes(hendelseModel: BehandleHendelseModel) = gcpStorageService.eksisterer(hentPathMedSakId(hendelseModel))
 
     fun hentHendelse(hendelse: BehandleHendelseModel): BehandleHendelseModel? {
         val path = hentPathMedSakId(hendelse)
         logger.info("Henter sakId: ${hendelse.sakId} from $path")
 
-        return try {
+        val objekt = try {
             //val hendelseModel = s3StorageService.get(path)
-            val hendelseModel = gcpStorageService.hent(path)
-
-            logger.debug("Henter hendelse fra: $path, data: $hendelseModel")
-            mapJsonToAny(hendelseModel, typeRefs())
+            gcpStorageService.hent(path)
 
         } catch (ex: Exception) {
-            logger.info("Feiler ved henting av data : $path")
+            logger.error("Feiler ved henting av data : $path", ex)
+            null
+        }
+
+        logger.debug("Henter hendelse fra: $path, data: $objekt")
+        return try {
+            objekt?.let { mapJsonToAny(it, typeRefs())}
+        } catch (ex: Exception) {
+            logger.error("Feilet ved mapping av json", ex)
             null
         }
     }
+
 
     fun hentPathMedSakId(hendelse: BehandleHendelseModel): String {
         val bucType = when (hendelse.hendelsesKode) {
