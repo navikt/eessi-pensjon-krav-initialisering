@@ -27,7 +27,7 @@ class GcpStorageService(
     }
 
     fun lagre(storageKey: String, storageValue: String) {
-        val blobInfo =  BlobInfo.newBuilder(BlobId.of(bucketname, storageKey)).setContentType("application/octet-stream").build()
+        val blobInfo =  BlobInfo.newBuilder(BlobId.of(bucketname, storageKey)).setContentType("application/json").build()
         kotlin.runCatching {
             gcpStorage.writer(blobInfo).use {
                 it.write(ByteBuffer.wrap(storageValue.toByteArray()))
