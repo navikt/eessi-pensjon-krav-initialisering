@@ -4,6 +4,7 @@ import com.google.cloud.storage.BlobId
 import com.google.cloud.storage.BlobInfo
 import com.google.cloud.storage.Storage
 import com.google.cloud.storage.StorageException
+import no.nav.eessi.pensjon.json.toJson
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -44,8 +45,15 @@ class GcpStorageService(
     }
 
     fun eksisterer(storageKey: String): Boolean{
-        val blob  = gcpStorage.get(BlobId.of(bucketname, storageKey))
-        if(blob != null && blob.exists()){
+        logger.debug("sjekker om $storageKey finnes i bucket: $bucketname")
+        val obj = gcpStorage.get(BlobId.of(bucketname, storageKey))
+
+        kotlin.runCatching {
+            obj.exists()
+        }.onFailure { ex ->
+            logger.error("Feiler med sjekk på finnes", ex)
+        }.onSuccess {
+            logger.debug("Blob : ${obj.toJson()}")
             return true
         }
         return false
