@@ -29,8 +29,8 @@ class LagringsService (private val gcpStorageService: GcpStorageService) {
     }
 
     fun kanHendelsenOpprettes(hendelseModel: BehandleHendelseModel) : Boolean {
-        logger.debug(gcpStorageService.list("P_BUC_03/").toString())
-        return gcpStorageService.eksisterer(hentPathMedSakId(hendelseModel))
+        logger.debug("liste over obj P_BUC_03/" + gcpStorageService.list("P_BUC_03/").toString())
+        return !gcpStorageService.eksisterer(hentPathMedSakId(hendelseModel))
     }
 
     fun hentHendelse(hendelse: BehandleHendelseModel): BehandleHendelseModel? {

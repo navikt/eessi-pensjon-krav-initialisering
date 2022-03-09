@@ -51,7 +51,7 @@ class GcpStorageService(
         kotlin.runCatching {
             obj.exists()
         }.onFailure { ex ->
-            logger.error("Feiler med sjekk på finnes", ex)
+            logger.warn("Feiler med sjekk på finnes", ex)
         }.onSuccess {
             logger.debug("Blob : ${obj.toJson()}")
             return true
