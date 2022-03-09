@@ -43,7 +43,13 @@ class GcpStorageService(
         return gcpStorage.get(BlobId.of(bucketname, storageKey)).getContent().toString() ?: throw RuntimeException("FIXME")
     }
 
-    fun eksisterer(storageKey: String) = gcpStorage.get(BlobId.of(bucketname, storageKey)).exists()
+    fun eksisterer(storageKey: String): Boolean{
+        val blob  = gcpStorage.get(BlobId.of(bucketname, storageKey))
+        if(blob != null && blob.exists()){
+            return true
+        }
+        return false
+    }
 
     fun slett(storageKey: String) : Boolean {
         val value = hent(storageKey)
