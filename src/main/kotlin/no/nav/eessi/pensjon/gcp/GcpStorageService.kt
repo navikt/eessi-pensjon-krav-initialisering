@@ -4,7 +4,6 @@ import com.google.cloud.storage.BlobId
 import com.google.cloud.storage.BlobInfo
 import com.google.cloud.storage.Storage
 import com.google.cloud.storage.StorageException
-import no.nav.eessi.pensjon.json.toJson
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -50,10 +49,8 @@ class GcpStorageService(
 
         kotlin.runCatching {
             obj.exists()
-        }.onFailure { ex ->
-            logger.warn("Feiler med sjekk på finnes", ex)
+        }.onFailure {
         }.onSuccess {
-            logger.debug("Blob : ${obj.toJson()}")
             return true
         }
         return false
