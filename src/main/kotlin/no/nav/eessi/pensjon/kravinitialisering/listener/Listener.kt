@@ -16,7 +16,7 @@ import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
 import java.util.*
-import java.util.concurrent.*
+import java.util.concurrent.CountDownLatch
 import javax.annotation.PostConstruct
 
 @Component
@@ -62,7 +62,7 @@ class Listener(
                         logger.info("Hendelse offset: ${cr.offset()}, finnes ikke fra før. Oppretter krav ${hendelseModel.hendelsesKode}, bucid: ${hendelseModel.bucId} saknr: ${hendelseModel.sakId}")
 
                         hendelseKlient.kallOpprettBehandleHendelse(hendelseModel)
-//                        lagringsService.lagreHendelseMedSakId(hendelseModel)
+                        lagringsService.lagreHendelseMedSakId(hendelseModel)
                     }
                 } else {
                     opprettKravFinnes.measure {
