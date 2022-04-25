@@ -11,8 +11,8 @@ import java.io.PrintWriter
 import java.io.StringWriter
 
 @Component
-class KafkaCustomErrorHandler : ContainerAwareErrorHandler {
-    private val logger = LoggerFactory.getLogger(KafkaCustomErrorHandler::class.java)
+class KafkaStoppingErrorHandler : ContainerAwareErrorHandler {
+    private val logger = LoggerFactory.getLogger(KafkaStoppingErrorHandler::class.java)
 
     private val stopper = CommonContainerStoppingErrorHandler()
 
