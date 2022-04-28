@@ -1,4 +1,4 @@
-FROM navikt/java:11-appdynamics
+FROM navikt/java:17-appdynamics
 
 COPY build/libs/eessi-pensjon-krav-initialisering-0.0.1-SNAPSHOT.jar /app/app.jar
 

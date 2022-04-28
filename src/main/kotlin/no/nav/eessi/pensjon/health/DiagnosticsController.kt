@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 
 
+    private val logger: Logger by lazy { LoggerFactory.getLogger(DiagnosticsController::class.java) }
 @RestController
 @Unprotected
 class DiagnosticsController {
-
-    private val logger: Logger by lazy { LoggerFactory.getLogger(DiagnosticsController::class.java) }
 
     @GetMapping("/ping")
     fun ping(): ResponseEntity<Unit> {
