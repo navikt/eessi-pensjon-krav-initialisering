@@ -37,8 +37,6 @@ plugins {
     id 'jacoco'
 }
 
-assert JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17): "Java 17 or newer is required"
-
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-spring'
 apply plugin: 'org.springframework.boot'
@@ -121,6 +119,8 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+assert JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17): "Java 17 or newer is required"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
