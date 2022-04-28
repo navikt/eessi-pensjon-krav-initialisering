@@ -120,12 +120,12 @@ test {
     useJUnitPlatform()
 }
 
-assert JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17): "Java 17 or newer is required"
-
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+
+assert JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17): "Java 17 or newer is required"
 
 compileKotlin {
     kotlinOptions {
