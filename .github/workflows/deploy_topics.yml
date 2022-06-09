@@ -22,13 +22,6 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: nais/topics/topic-privat-krav-initialisering-q2.yaml
 
-      - name: 'Deploy privat-krav-initialisering-q1 to eessipensjon namespace'
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-gcp
-          RESOURCE: nais/topics/topic-privat-krav-initialisering-q1.yaml
-
       - name: 'Deploy privat-krav-initialisering to eessipensjon namespace'
         uses: nais/deploy/actions/deploy@v1
         env:

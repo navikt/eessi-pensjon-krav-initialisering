@@ -61,7 +61,7 @@ class BehandleHendelseKlient(
                 val headers = HttpHeaders()
                 headers.contentType = MediaType.APPLICATION_JSON
                 val httpEntity = HttpEntity(model.toJson(), headers)
-                logger.debug("*** legger følgende melding på behandlehendlse tjenesten: ${model.toJson()} ***")
+                logger.info("*** legger følgende melding på behandlehendlse tjenesten: ${model.toJson()} ***")
 
                 penAzureTokenRestTemplate.postForEntity(
                     "/",

@@ -1,11 +1,11 @@
 buildscript {
 
     ext {
-        kotlinVersion = '1.6.21'
-        springBootVersion = '2.6.7'
-        logstashLogbackVersion = '7.1.1'
+        kotlinVersion = '1.7.0'
+        springBootVersion = '2.7.0'
+        logstashLogbackVersion = '7.2'
         tokenSupportVersion = '1.3.9'
-        gcpStorageVersion = "2.6.1"
+        gcpStorageVersion = "2.8.0"
     }
 
     repositories {
@@ -86,7 +86,7 @@ dependencies {
 
     //GCP
     implementation("com.google.cloud:google-cloud-storage:$gcpStorageVersion")
-    implementation(platform("com.google.cloud:libraries-bom:23.0.0"))
+    implementation(platform("com.google.cloud:libraries-bom:25.4.0"))
 
     //mock - test
     testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
@@ -95,7 +95,7 @@ dependencies {
     testImplementation("org.mock-server:mockserver-netty:5.13.2") {
         exclude module: 'junit'
     }
-    testImplementation "io.mockk:mockk:1.12.3"
+    testImplementation "io.mockk:mockk:1.12.4"
 
     // Architecture tests
     testImplementation 'com.tngtech.archunit:archunit:0.23.1'
