@@ -88,9 +88,11 @@ dependencies {
     implementation("com.google.cloud:google-cloud-storage:$gcpStorageVersion")
     implementation(platform("com.google.cloud:libraries-bom:25.4.0"))
 
+    testImplementation(platform("org.junit:junit-bom:5.8.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+
     //mock - test
-    testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.2")
     testImplementation("org.mock-server:mockserver-client-java:5.13.2")
     testImplementation("org.mock-server:mockserver-netty:5.13.2") {
         exclude module: 'junit'
