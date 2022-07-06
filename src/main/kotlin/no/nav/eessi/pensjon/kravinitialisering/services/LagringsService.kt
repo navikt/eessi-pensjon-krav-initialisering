@@ -22,7 +22,6 @@ class LagringsService (private val gcpStorageService: GcpStorageService) {
 
             logger.debug("Lagrer hendelse: $path, data: $jsondata")
             gcpStorageService.lagre(path, jsondata)
-            //s3StorageService.put(path, jsondata)
         } catch (ex: Exception) {
             logger.error("Feiler ved lagring av data: $path")
         }
@@ -38,7 +37,6 @@ class LagringsService (private val gcpStorageService: GcpStorageService) {
         logger.info("Henter sakId: ${hendelse.sakId} from $path")
 
         val objekt = try {
-            //val hendelseModel = s3StorageService.get(path)
             gcpStorageService.hent(path)
 
         } catch (ex: Exception) {
