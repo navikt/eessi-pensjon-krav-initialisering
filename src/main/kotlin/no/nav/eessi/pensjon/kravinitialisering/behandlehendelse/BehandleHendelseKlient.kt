@@ -1,7 +1,6 @@
 package no.nav.eessi.pensjon.kravinitialisering.behandlehendelse
 
 import io.micrometer.core.instrument.Metrics
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModelPesys
@@ -20,7 +19,7 @@ import javax.annotation.PostConstruct
 @Component
 class BehandleHendelseKlient(
     private val penAzureTokenRestTemplate: RestTemplate,
-    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
 ) {
 
     private val logger = LoggerFactory.getLogger(BehandleHendelseKlient::class.java)

@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.kravinitialisering.listener
 
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.json.mapJsonToAny
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.json.typeRefs
@@ -23,7 +22,7 @@ import javax.annotation.PostConstruct
 class Listener(
     private val hendelseKlient: BehandleHendelseKlient,
     private val lagringsService: LagringsService,
-    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
 ) {
 
     private val logger = LoggerFactory.getLogger(Listener::class.java)
