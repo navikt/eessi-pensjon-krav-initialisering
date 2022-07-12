@@ -77,8 +77,8 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
 
     //eessi pensjon libs
-    implementation("no.nav.eessi.pensjon:ep-logging:1.0.29")
-    implementation("no.nav.eessi.pensjon:ep-metrics:0.5.3")
+    implementation("no.nav.eessi.pensjon:ep-logging:1.0.31")
+    implementation("no.nav.eessi.pensjon:ep-metrics:0.5.4")
 
     //GCP
     implementation(platform("com.google.cloud:libraries-bom:26.0.0"))
