@@ -1,11 +1,19 @@
 package no.nav.eessi.pensjon.kravinitialisering.integrationtest
 
 import IntegrasjonsTestConfig
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.mockk
+import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.EessiPensjonKravInitialiseringTestApplication
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
+import org.apache.http.conn.ssl.NoopHostnameVerifier
+import org.apache.http.conn.ssl.TrustStrategy
+import org.apache.http.impl.client.CloseableHttpClient
+import org.apache.http.impl.client.HttpClients
+import org.apache.http.ssl.SSLContexts
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
@@ -24,6 +32,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
@@ -37,8 +46,10 @@ import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
+import java.security.cert.X509Certificate
 import java.time.LocalDateTime
 import java.util.concurrent.*
+import javax.net.ssl.SSLContext
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
 private lateinit var mockServer: ClientAndServer
@@ -53,7 +64,6 @@ private var mockServerPort = PortFactory.findFreePort()
     topics = [KRAV_INITIALISERING_TOPIC],
     brokerProperties = ["log.dir=out/embedded-kafkamottatt"]
 )
-@Disabled
 class ListenerIntegrasjonsTest {
 
     @Suppress("SpringJavaInjectionPointsAutowiringInspection")
@@ -63,13 +73,16 @@ class ListenerIntegrasjonsTest {
     @Autowired
     lateinit var listener: Listener
 
+    @MockkBean(relaxed = true)
+    lateinit var gcpStorageService: GcpStorageService
+
     private lateinit var container: KafkaMessageListenerContainer<String, String>
     private lateinit var sedMottattProducerTemplate: KafkaTemplate<Int, String>
 
     @BeforeEach
     fun setup() {
 
-        container = settOppUtitlityConsumer(KRAV_INITIALISERING_TOPIC)
+        container = settOppUtitlityConsumer()
         container.start()
         ContainerTestUtils.waitForAssignment(container, embeddedKafka.partitionsPerTopic)
 
@@ -163,7 +176,7 @@ class ListenerIntegrasjonsTest {
         return template
     }
 
-    private fun settOppUtitlityConsumer(topicNavn: String): KafkaMessageListenerContainer<String, String> {
+    private fun settOppUtitlityConsumer(): KafkaMessageListenerContainer<String, String> {
         val consumerProperties = KafkaTestUtils.consumerProps(
             "eessi-pensjon-group2",
             "false",
@@ -172,7 +185,7 @@ class ListenerIntegrasjonsTest {
         consumerProperties["auto.offset.reset"] = "earliest"
 
         val consumerFactory = DefaultKafkaConsumerFactory<String, String>(consumerProperties)
-        val containerProperties = ContainerProperties(topicNavn)
+        val containerProperties = ContainerProperties(KRAV_INITIALISERING_TOPIC)
         val container = KafkaMessageListenerContainer<String, String>(consumerFactory, containerProperties)
         val messageListener = MessageListener<String, String> { record -> println("Konsumerer melding:  $record") }
         container.setupMessageListener(messageListener)
@@ -209,7 +222,7 @@ class ListenerIntegrasjonsTest {
     @TestConfiguration
     class TestConfig {
 
-        @Bean
+/*        @Bean
         fun penAzureTokenRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
 
             return RestTemplateBuilder()
@@ -217,6 +230,29 @@ class ListenerIntegrasjonsTest {
                 .build().apply {
 //                    requestFactory = customRequestFactory
                 }
+        }*/
+        @Bean
+        fun penAzureTokenRestTemplate(): RestTemplate {
+            val acceptingTrustStrategy = TrustStrategy { chain: Array<X509Certificate?>?, authType: String? -> true }
+
+            val sslContext: SSLContext = SSLContexts.custom()
+                .loadTrustMaterial(null, acceptingTrustStrategy)
+                .build()
+
+            val httpClient: CloseableHttpClient = HttpClients.custom()
+                .setSSLContext(sslContext)
+                .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                .build()
+
+            val customRequestFactory = HttpComponentsClientHttpRequestFactory()
+            customRequestFactory.httpClient = httpClient
+
+            return RestTemplateBuilder()
+                .rootUri("https://localhost:${mockServerPort}")
+                .build().apply {
+                    requestFactory = customRequestFactory
+                }
         }
+
     }
 }
