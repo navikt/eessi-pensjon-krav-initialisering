@@ -1,3 +1,4 @@
+package no.nav.eessi.pensjon.kravinitialisering.config
 
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
