@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.config;
+package no.nav.eessi.pensjon.config
 
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
