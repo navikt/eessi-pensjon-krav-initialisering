@@ -43,7 +43,7 @@ class KafkaConfig(
         val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
         factory.consumerFactory = aivenKafkaConsumerFactory()
         factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
-        factory.containerProperties.setAuthExceptionRetryInterval(Duration.ofSeconds(4L))
+        factory.containerProperties.authExceptionRetryInterval = Duration.ofSeconds(4L)
         return factory
     }
 
