@@ -1,13 +1,12 @@
 package no.nav.eessi.pensjon.kravinitialisering.integrationtest
 
-import IntegrasjonsTestConfig
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.mockk
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.EessiPensjonKravInitialiseringTestApplication
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
+import no.nav.eessi.pensjon.kravinitialisering.config.IntegrasjonsTestConfig
 import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.apache.http.conn.ssl.TrustStrategy
@@ -16,7 +15,6 @@ import org.apache.http.impl.client.HttpClients
 import org.apache.http.ssl.SSLContexts
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.Header
@@ -48,7 +46,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
 import java.security.cert.X509Certificate
 import java.time.LocalDateTime
-import java.util.concurrent.*
+import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLContext
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
@@ -186,7 +184,7 @@ class ListenerIntegrasjonsTest {
 
         val consumerFactory = DefaultKafkaConsumerFactory<String, String>(consumerProperties)
         val containerProperties = ContainerProperties(KRAV_INITIALISERING_TOPIC)
-        val container = KafkaMessageListenerContainer<String, String>(consumerFactory, containerProperties)
+        val container = KafkaMessageListenerContainer(consumerFactory, containerProperties)
         val messageListener = MessageListener<String, String> { record -> println("Konsumerer melding:  $record") }
         container.setupMessageListener(messageListener)
 
@@ -222,15 +220,6 @@ class ListenerIntegrasjonsTest {
     @TestConfiguration
     class TestConfig {
 
-/*        @Bean
-        fun penAzureTokenRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
-
-            return RestTemplateBuilder()
-                .rootUri("https://localhost:${mockServerPort}")
-                .build().apply {
-//                    requestFactory = customRequestFactory
-                }
-        }*/
         @Bean
         fun penAzureTokenRestTemplate(): RestTemplate {
             val acceptingTrustStrategy = TrustStrategy { chain: Array<X509Certificate?>?, authType: String? -> true }
