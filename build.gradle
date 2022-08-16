@@ -81,7 +81,7 @@ dependencies {
     implementation("no.nav.eessi.pensjon:ep-metrics:0.5.5")
 
     //GCP
-    implementation(platform("com.google.cloud:libraries-bom:26.0.0"))
+    implementation(platform("com.google.cloud:libraries-bom:26.1.0"))
     implementation("com.google.cloud:google-cloud-storage")
 
     testImplementation(platform("org.junit:junit-bom:5.9.0"))
