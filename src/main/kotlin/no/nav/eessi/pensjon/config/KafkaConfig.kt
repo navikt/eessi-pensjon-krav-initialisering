@@ -4,6 +4,7 @@ import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.serialization.StringDeserializer
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -24,6 +25,7 @@ class KafkaConfig(
     @param:Value("\${kafka.truststore.path}") private val truststorePath: String,
     @param:Value("\${kafka.brokers}") private val aivenBootstrapServers: String,
     @param:Value("\${kafka.security.protocol}") private val securityProtocol: String,
+    @Autowired private val kafkaErrorHandler: KafkaStoppingErrorHandler?
 ) {
 
     fun aivenKafkaConsumerFactory(): ConsumerFactory<String, String> {
@@ -44,6 +46,9 @@ class KafkaConfig(
         factory.consumerFactory = aivenKafkaConsumerFactory()
         factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
         factory.containerProperties.setAuthExceptionRetryInterval( Duration.ofSeconds(4L) )
+        if (kafkaErrorHandler != null) {
+            factory.setCommonErrorHandler(kafkaErrorHandler)
+        }
         return factory
     }
 
