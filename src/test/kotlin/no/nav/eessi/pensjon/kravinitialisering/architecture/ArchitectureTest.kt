@@ -2,7 +2,6 @@ package no.nav.eessi.pensjon.kravinitialisering.architecture
 
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.core.importer.ImportOption
-import com.tngtech.archunit.core.importer.ImportOptions
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noMethods
@@ -22,12 +21,11 @@ class ArchitectureTest {
         .replace("." + EessiPensjonKravInitialiseringApplication::class.simpleName, "")
 
     private val classesToAnalyze = ClassFileImporter()
-        .importClasspath(
-            ImportOptions()
-                .with(ImportOption.DoNotIncludeJars())
-                .with(ImportOption.DoNotIncludeArchives())
-                .with(ImportOption.DoNotIncludeTests())
-        )
+        .withImportOptions(listOf(
+            ImportOption.DoNotIncludeJars(),
+            ImportOption.DoNotIncludeArchives(),
+            ImportOption.DoNotIncludeTests())
+        ).importPackages(root)
 
     @BeforeAll
     fun beforeAll() {
@@ -76,6 +74,7 @@ class ArchitectureTest {
 
 
         layeredArchitecture()
+            .consideringOnlyDependenciesInAnyPackage(root)
             //Define components
             .layer(ROOT).definedBy(root)
             .layer(Config).definedBy("$root.config")
