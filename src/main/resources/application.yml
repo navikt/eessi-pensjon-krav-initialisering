@@ -24,7 +24,7 @@ kafka:
     topic: ${KRAV_INITIALISERING_TOPIC}
     groupid: eessi-pensjon-krav-initialisering-group
 
-METRICS_REQUESTFILTER_ENABLE: false
+METRICS_REQUESTFILTER_ENABLE: true
 
 #Metrics
 management:

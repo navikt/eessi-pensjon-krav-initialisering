@@ -1,7 +1,9 @@
 package no.nav.eessi.pensjon.config
 
+import io.micrometer.core.instrument.MeterRegistry
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
+import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
 import no.nav.security.token.support.client.core.ClientProperties
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties
@@ -21,7 +23,10 @@ import java.util.*
 
 @Profile("prod", "test")
 @Configuration
-class OAuth2RestTemplateConfiguration(@Value("\${PEN_BEHANDLEHENDELSE_URL}") private val penUrl: String) {
+class OAuth2RestTemplateConfiguration(
+        @Value("\${PEN_BEHANDLEHENDELSE_URL}") private val penUrl: String,
+        private val meterRegistry: MeterRegistry
+        ) {
 
     /**
      * Create one RestTemplate per OAuth2 client entry to separate between different scopes per API
@@ -39,6 +44,7 @@ class OAuth2RestTemplateConfiguration(@Value("\${PEN_BEHANDLEHENDELSE_URL}") pri
             .additionalInterceptors(
                 bearerTokenInterceptor(clientProperties, oAuth2AccessTokenService),
                 RequestIdHeaderInterceptor(),
+                RequestCountInterceptor(meterRegistry),
                 RequestResponseLoggerInterceptor()
             )
             .build().apply {
