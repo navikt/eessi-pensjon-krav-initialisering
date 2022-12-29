@@ -1,12 +1,11 @@
 package no.nav.eessi.pensjon.kravinitialisering.listener
 
-import no.nav.eessi.pensjon.json.mapJsonToAny
-import no.nav.eessi.pensjon.json.toJson
-import no.nav.eessi.pensjon.json.typeRefs
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.behandlehendelse.BehandleHendelseKlient
 import no.nav.eessi.pensjon.kravinitialisering.services.LagringsService
 import no.nav.eessi.pensjon.metrics.MetricsHelper
+import no.nav.eessi.pensjon.utils.mapJsonToAny
+import no.nav.eessi.pensjon.utils.toJson
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
@@ -54,7 +53,7 @@ class Listener(
             logger.info("Melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
             try {
                 logger.debug("Hendelse : ${hendelse.toJson()}")
-                val hendelseModel: BehandleHendelseModel = mapJsonToAny(hendelse, typeRefs())
+                val hendelseModel: BehandleHendelseModel = mapJsonToAny(hendelse)
 
                 if (lagringsService.kanHendelsenOpprettes(hendelseModel)) {
                     opprettKrav.measure {

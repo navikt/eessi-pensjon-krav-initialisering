@@ -2,12 +2,12 @@ package no.nav.eessi.pensjon.kravinitialisering.integrationtest
 
 import com.ninjasquad.springmockk.MockkBean
 import no.nav.eessi.pensjon.gcp.GcpStorageService
-import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.EessiPensjonKravInitialiseringTestApplication
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.config.IntegrasjonsTestConfig
 import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
+import no.nav.eessi.pensjon.utils.toJson
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.apache.http.conn.ssl.TrustStrategy
 import org.apache.http.impl.client.CloseableHttpClient

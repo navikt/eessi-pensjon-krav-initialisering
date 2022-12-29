@@ -67,6 +67,9 @@ dependencies {
     //eessi pensjon libs
     implementation("no.nav.eessi.pensjon:ep-logging:1.1.11")
     implementation("no.nav.eessi.pensjon:ep-metrics:1.0.8")
+    implementation("no.nav.eessi.pensjon:ep-eux:1.3.58"){
+        exclude module: 'ep-metrics'
+    }
 
     //GCP
     implementation(platform("com.google.cloud:libraries-bom:26.2.0"))

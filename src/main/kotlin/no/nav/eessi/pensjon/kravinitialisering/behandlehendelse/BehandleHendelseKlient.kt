@@ -1,11 +1,11 @@
 package no.nav.eessi.pensjon.kravinitialisering.behandlehendelse
 
 import io.micrometer.core.instrument.Metrics
-import no.nav.eessi.pensjon.json.toJson
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModelPesys
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.metrics.MetricsHelper
+import no.nav.eessi.pensjon.utils.toJson
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity

@@ -1,11 +1,10 @@
 package no.nav.eessi.pensjon.kravinitialisering.services
 
 import no.nav.eessi.pensjon.gcp.GcpStorageService
-import no.nav.eessi.pensjon.json.mapJsonToAny
-import no.nav.eessi.pensjon.json.toJson
-import no.nav.eessi.pensjon.json.typeRefs
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
+import no.nav.eessi.pensjon.utils.mapJsonToAny
+import no.nav.eessi.pensjon.utils.toJson
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -46,7 +45,7 @@ class LagringsService (private val gcpStorageService: GcpStorageService) {
 
         logger.debug("Henter hendelse fra: $path, data: $objekt")
         return try {
-            objekt?.let { mapJsonToAny(it, typeRefs())}
+            objekt?.let { mapJsonToAny(it)}
         } catch (ex: Exception) {
             logger.error("Feilet ved mapping av json", ex)
             null

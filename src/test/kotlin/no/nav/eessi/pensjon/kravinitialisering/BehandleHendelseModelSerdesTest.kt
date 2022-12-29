@@ -1,8 +1,7 @@
 package no.nav.eessi.pensjon.kravinitialisering
 
-import no.nav.eessi.pensjon.json.mapJsonToAny
-import no.nav.eessi.pensjon.json.toJson
-import no.nav.eessi.pensjon.json.typeRefs
+import no.nav.eessi.pensjon.utils.mapJsonToAny
+import no.nav.eessi.pensjon.utils.toJson
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -20,7 +19,7 @@ internal class BehandleHendelseModelSerdesTest {
         }
         """.trimIndent()
 
-        val hendelse = mapJsonToAny(json, typeRefs<BehandleHendelseModel>())
+        val hendelse = mapJsonToAny<BehandleHendelseModel>(json)
         assertNotNull(hendelse)
         assertNotNull(hendelse.opprettetDato)
 
@@ -40,7 +39,7 @@ internal class BehandleHendelseModelSerdesTest {
         }
         """.trimIndent()
 
-        val hendelse = mapJsonToAny(json, typeRefs<BehandleHendelseModel>())
+        val hendelse = mapJsonToAny<BehandleHendelseModel>(json)
         assertEquals("2020-01-01T12:01:02", hendelse.opprettetDato.toString())
     }
 }
