@@ -8,11 +8,14 @@ import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
 import no.nav.eessi.pensjon.kravinitialisering.config.IntegrasjonsTestConfig
 import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
 import no.nav.eessi.pensjon.utils.toJson
-import org.apache.http.conn.ssl.NoopHostnameVerifier
-import org.apache.http.conn.ssl.TrustStrategy
-import org.apache.http.impl.client.CloseableHttpClient
-import org.apache.http.impl.client.HttpClients
-import org.apache.http.ssl.SSLContexts
+import org.apache.hc.client5.http.impl.classic.HttpClients
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder
+import org.apache.hc.client5.http.io.HttpClientConnectionManager
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder
+import org.apache.hc.core5.ssl.SSLContexts
+import org.apache.hc.core5.ssl.TrustStrategy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -147,7 +150,7 @@ class ListenerIntegrasjonsTest {
 
         mockServer.verify(
             HttpRequest.request()
-                .withMethod(HttpMethod.POST.name)
+                .withMethod(HttpMethod.POST.name())
                 .withPath("/"),
             VerificationTimes.exactly(antallPosts)
         )
@@ -201,7 +204,7 @@ class ListenerIntegrasjonsTest {
 
             mockServer.`when`(
                 HttpRequest.request()
-                    .withMethod(HttpMethod.POST.name)
+                    .withMethod(HttpMethod.POST.name())
                     .withPath("/")
             )
                 .respond(
@@ -215,22 +218,25 @@ class ListenerIntegrasjonsTest {
     }
 
     // Mocks PDL-PersonService and EuxService
-    @Suppress("unused")
     @Profile("integrationtest")
     @TestConfiguration
     class TestConfig {
-
         @Bean
-        fun penAzureTokenRestTemplate(): RestTemplate {
+        fun penAzureTokenRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
             val acceptingTrustStrategy = TrustStrategy { _: Array<X509Certificate?>?, _: String? -> true }
 
-            val sslContext: SSLContext = SSLContexts.custom()
+            val sslcontext: SSLContext = SSLContexts.custom()
                 .loadTrustMaterial(null, acceptingTrustStrategy)
                 .build()
-
-            val httpClient: CloseableHttpClient = HttpClients.custom()
-                .setSSLContext(sslContext)
-                .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+            val sslSocketFactory: SSLConnectionSocketFactory = SSLConnectionSocketFactoryBuilder.create()
+                .setSslContext(sslcontext)
+                .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                .build()
+            val connectionManager: HttpClientConnectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+                .setSSLSocketFactory(sslSocketFactory)
+                .build()
+            val httpClient = HttpClients.custom()
+                .setConnectionManager(connectionManager)
                 .build()
 
             val customRequestFactory = HttpComponentsClientHttpRequestFactory()
@@ -242,6 +248,5 @@ class ListenerIntegrasjonsTest {
                     requestFactory = customRequestFactory
                 }
         }
-
     }
 }
