@@ -25,7 +25,6 @@ plugins {
 apply from: "buildSrc/ep-module.gradle"
 
 group = 'no.nav.eessi.pensjon'
-version = '0.0.1-SNAPSHOT'
 
 configurations {
     xsd
