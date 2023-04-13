@@ -18,7 +18,6 @@ oppgave.oppgaver.url: http://localhost:${mockserverport}
 journalpost_v1_url: http://localhost:${mockserverport}
 aktoerregister.api.v1.url: http://localhost:${mockserverport}
 eessi_pensjon_fagmodul_url: http://localhost:${mockserverport}
-norg2_url: http://localhost:${mockserverport}
 bestemsak_url: http://localhost:${mockserverport}
 
 pensjonsinformasjon:
