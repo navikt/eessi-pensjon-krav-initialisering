@@ -27,7 +27,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: https://eessi-pensjon-krav-initialisering.intern.nav.no
+        - host: eessi-pensjon-onprem-proxy.prod-fss-pub.nais.io
   webproxy: true
   env:
     - name: GCP_BUCKET_NAME
