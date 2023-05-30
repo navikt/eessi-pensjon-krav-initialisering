@@ -44,7 +44,7 @@ dependencies {
 
     implementation('org.springframework.retry:spring-retry:2.0.1')
 
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.15.0'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.15.1'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
     implementation "org.springframework.kafka:spring-kafka:$springKafkaVersion"
