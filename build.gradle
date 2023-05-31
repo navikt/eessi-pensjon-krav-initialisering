@@ -61,8 +61,6 @@ dependencies {
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
 
-    implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
-
     //eessi pensjon libs
     implementation("no.nav.eessi.pensjon:ep-metrics:2.0.19")
     implementation("no.nav.eessi.pensjon:ep-logging:2.1.14")
