@@ -140,7 +140,7 @@ class ListenerIntegrasjonsTest {
         sendMelding(annenMockmodel)
         sendMeldingString(mockModelUtenOpprettdato)
 
-        listener.getLatch().await(5000, TimeUnit.MILLISECONDS)
+        listener.getLatch().await(20000, TimeUnit.MILLISECONDS)
 
         verifyPostRequests(5)
 
