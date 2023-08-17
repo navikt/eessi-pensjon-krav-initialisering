@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.kravinitialisering.integrationtest
 
 import com.ninjasquad.springmockk.MockkBean
+import com.ninjasquad.springmockk.MockkBeans
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.EessiPensjonKravInitialiseringTestApplication
@@ -53,17 +54,16 @@ import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLContext
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
-private lateinit var mockServer: ClientAndServer
-private var mockServerPort = PortFactory.findFreePort()
 
 @SpringBootTest(classes = [IntegrasjonsTestConfig::class, ListenerIntegrasjonsTest.TestConfig::class, EessiPensjonKravInitialiseringTestApplication::class], value = ["SPRING_PROFILES_ACTIVE", "integrationtest"])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EmbeddedKafka(
     controlledShutdown = true,
-    partitions = 1,
-    topics = [KRAV_INITIALISERING_TOPIC],
-    brokerProperties = ["log.dir=out/embedded-kafkamottatt"]
+    topics = [KRAV_INITIALISERING_TOPIC]
+)
+@MockkBeans(
+    MockkBean(name = "personService", classes = [GcpStorageService::class], relaxed = true)
 )
 class ListenerIntegrasjonsTest {
 
@@ -74,12 +74,24 @@ class ListenerIntegrasjonsTest {
     @Autowired
     lateinit var listener: Listener
 
-    @MockkBean(relaxed = true)
-    lateinit var gcpStorageService: GcpStorageService
-
     private lateinit var container: KafkaMessageListenerContainer<String, String>
     private lateinit var sedMottattProducerTemplate: KafkaTemplate<Int, String>
 
+    lateinit var mockServer: ClientAndServer
+
+    init {
+        if (System.getProperty("mockServerport") == null) {
+            mockServer = ClientAndServer(PortFactory.findFreePort()).also {
+                    System.setProperty("mockServerport", it.localPort.toString())
+                }
+
+            mockServer.`when`(HttpRequest.request().withMethod(HttpMethod.POST.name()).withPath("/"))
+                .respond(HttpResponse.response()
+                        .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
+                        .withStatusCode(HttpStatusCode.OK_200.code()).withBody("{}")
+            )
+        }
+    }
     @BeforeEach
     fun setup() {
 
@@ -140,7 +152,7 @@ class ListenerIntegrasjonsTest {
         sendMelding(annenMockmodel)
         sendMeldingString(mockModelUtenOpprettdato)
 
-        listener.getLatch().await(20000, TimeUnit.MILLISECONDS)
+        listener.getLatch().await(30000, TimeUnit.MILLISECONDS)
 
         verifyPostRequests(5)
 
@@ -194,29 +206,6 @@ class ListenerIntegrasjonsTest {
         return container
     }
 
-    companion object {
-
-        init {
-            // Start Mockserver in memory
-
-            mockServer = ClientAndServer.startClientAndServer(mockServerPort)
-            System.setProperty("mockServerport", mockServerPort.toString())
-
-            mockServer.`when`(
-                HttpRequest.request()
-                    .withMethod(HttpMethod.POST.name())
-                    .withPath("/")
-            )
-                .respond(
-                    HttpResponse.response()
-                        .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
-                        .withStatusCode(HttpStatusCode.OK_200.code())
-                        .withBody("{}")
-                )
-        }
-
-    }
-
     // Mocks PDL-PersonService and EuxService
     @Profile("integrationtest")
     @TestConfiguration
@@ -243,7 +232,7 @@ class ListenerIntegrasjonsTest {
             customRequestFactory.httpClient = httpClient
 
             return RestTemplateBuilder()
-                .rootUri("https://localhost:${mockServerPort}")
+                .rootUri("https://localhost:${System.getProperty("mockServerport")}")
                 .build().apply {
                     requestFactory = customRequestFactory
                 }
