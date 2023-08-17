@@ -69,9 +69,7 @@ dependencies {
     }
 
     //GCP
-    implementation(platform("com.google.cloud:libraries-bom:26.19.0"))
-    implementation("com.google.cloud:google-cloud-storage")
-    implementation 'com.google.guava:guava:32.1.2-jre' // "-jre" for Java 8 or higher,https://github.com/google/guava/issues/6612
+    implementation("com.google.cloud:google-cloud-storage:2.26.1")
 
     //mock - test
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
