@@ -55,7 +55,7 @@ import javax.net.ssl.SSLContext
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
 
-@SpringBootTest(classes = [IntegrasjonsTestConfig::class, ListenerIntegrasjonsTest.TestConfig::class, EessiPensjonKravInitialiseringTestApplication::class], value = ["SPRING_PROFILES_ACTIVE", "integrationtest"])
+@SpringBootTest(classes = [IntegrasjonsTestConfig::class, ListenerIntegrasjonsTest.TestConfig::class, EessiPensjonKravInitialiseringTestApplication::class])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EmbeddedKafka(

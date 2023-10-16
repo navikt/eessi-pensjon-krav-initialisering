@@ -1,3 +1,5 @@
+
+SPRING_PROFILES_ACTIVE: "integrationtest"
 ENV: 'q2'
 kafka:
   krav.initialisering:
