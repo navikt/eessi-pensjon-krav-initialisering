@@ -14,7 +14,6 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
-import javax.annotation.PostConstruct
 
 @Component
 class BehandleHendelseKlient(
@@ -26,8 +25,7 @@ class BehandleHendelseKlient(
 
     private lateinit var behandlehendelse: MetricsHelper.Metric
 
-    @PostConstruct
-    fun initMetrics() {
+    init {
         behandlehendelse = metricsHelper.init("Behandlehendelse", alert = MetricsHelper.Toggle.OFF)
     }
 

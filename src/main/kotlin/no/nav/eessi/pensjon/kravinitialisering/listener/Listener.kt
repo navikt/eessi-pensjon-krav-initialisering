@@ -15,7 +15,6 @@ import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
 import java.util.*
 import java.util.concurrent.CountDownLatch
-import javax.annotation.PostConstruct
 
 @Component
 class Listener(
@@ -33,8 +32,7 @@ class Listener(
 
     fun getLatch() = latch
 
-    @PostConstruct
-    fun initMetrics() {
+    init {
         opprettKrav = metricsHelper.init("opprettKrav", alert = MetricsHelper.Toggle.OFF)
         opprettKravFinnes = metricsHelper.init("opprettKravFinnes", alert = MetricsHelper.Toggle.OFF)
     }
