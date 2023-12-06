@@ -48,7 +48,7 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
     implementation "org.springframework.kafka:spring-kafka:$springKafkaVersion"
-    implementation("org.apache.httpcomponents.client5:httpclient5:5.2.1")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.2.3")
 
     //Auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
