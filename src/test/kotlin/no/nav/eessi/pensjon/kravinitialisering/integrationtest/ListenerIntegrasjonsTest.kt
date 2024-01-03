@@ -105,7 +105,6 @@ class ListenerIntegrasjonsTest {
     @AfterEach
     fun after() {
         shutdown(container)
-        embeddedKafka.kafkaServers.forEach { it.shutdown() }
     }
 
     @Test
@@ -178,7 +177,6 @@ class ListenerIntegrasjonsTest {
 
     private fun shutdown(container: KafkaMessageListenerContainer<String, String>) {
         container.stop()
-        embeddedKafka.kafkaServers.forEach { it.shutdown() }
     }
 
     private fun settOppProducerTemplate(): KafkaTemplate<Int, String> {
