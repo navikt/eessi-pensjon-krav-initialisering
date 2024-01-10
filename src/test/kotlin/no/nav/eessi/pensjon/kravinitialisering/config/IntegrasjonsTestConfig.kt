@@ -14,7 +14,7 @@ import org.springframework.kafka.test.EmbeddedKafkaBroker
 import java.time.Duration
 
 @TestConfiguration
-class IntegrasjonsTestConfig() {
+class IntegrasjonsTestConfig {
     @Value("\${" + EmbeddedKafkaBroker.SPRING_EMBEDDED_KAFKA_BROKERS + "}")
     private lateinit var brokerAddresses: String
 
