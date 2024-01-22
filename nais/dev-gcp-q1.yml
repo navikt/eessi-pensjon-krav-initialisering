@@ -1,7 +1,7 @@
 kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
-  name: eessi-pensjon-krav-initialisering-q2
+  name: eessi-pensjon-krav-initialisering-q1
   namespace: eessipensjon
   labels:
     team: eessipensjon
@@ -27,7 +27,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
+        - host: eessi-pensjon-onprem-proxy-q1.dev-fss-pub.nais.io
 
   webproxy: true
   env:
@@ -38,11 +38,11 @@ spec:
     - name: KRAV_INITIALISERING_TOPIC
       value: eessipensjon.privat-krav-initialisering-q1
     - name: PEN_BEHANDLEHENDELSE_URL
-      value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io/pen/api/behandlehendelse/utland/v1/
+      value: https://eessi-pensjon-onprem-proxy-q1.dev-fss-pub.nais.io/pen/api/behandlehendelse/utland/v1/
     - name: EESSI_PEN_ONPREM_PROXY_URL
-      value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
+      value: https://eessi-pensjon-onprem-proxy-q1.dev-fss-pub.nais.io
     - name: AZURE_APP_PROXY_CLIENT_ID
-      value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q2
+      value: dev-fss.eessipensjon.eessi-pensjon-onprem-proxy-q1
     - name: ENV
       value: q1
 
