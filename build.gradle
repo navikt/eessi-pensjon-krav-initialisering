@@ -83,7 +83,7 @@ dependencies {
     testImplementation("org.mock-server:mockserver-netty:5.15.0") {
         exclude module: 'junit'
     }
-    testImplementation "io.mockk:mockk:1.13.9"
+    testImplementation "io.mockk:mockk:1.13.10"
 
     // Architecture tests
     testImplementation 'com.tngtech.archunit:archunit:1.2.1'
