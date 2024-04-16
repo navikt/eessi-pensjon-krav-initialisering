@@ -86,7 +86,7 @@ dependencies {
     testImplementation "io.mockk:mockk:1.13.10"
 
     // Architecture tests
-    testImplementation 'com.tngtech.archunit:archunit:1.2.1'
+    testImplementation 'com.tngtech.archunit:archunit:1.3.0'
 
     testImplementation("com.ninja-squad:springmockk:4.0.2")
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
