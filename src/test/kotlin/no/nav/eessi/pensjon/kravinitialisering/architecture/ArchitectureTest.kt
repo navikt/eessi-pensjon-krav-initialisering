@@ -78,7 +78,7 @@ class ArchitectureTest {
             //Define components
             .layer(ROOT).definedBy(root)
             .layer(Config).definedBy("$root.config")
-            .layer(Health).definedBy("$root.health")
+            .layer(Health).definedBy("$root.shared.api.health")
             .layer(JSON).definedBy("$root.json")
             .layer(Listeners).definedBy("$root.kravinitialisering.listener")
             //define rules
