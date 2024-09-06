@@ -58,7 +58,7 @@ class ArchitectureTest {
     fun `controllers should not call each other`() {
         ArchRuleDefinition.classes().that()
             .areAnnotatedWith(RestController::class.java)
-            .should().onlyBeAccessed().byClassesThat().areNotAnnotatedWith(RestController::class.java)
+            .should().onlyHaveDependentClassesThat().areNotAnnotatedWith(RestController::class.java)
             .because("Controllers should not call each other")
             .check(classesToAnalyze)
     }
