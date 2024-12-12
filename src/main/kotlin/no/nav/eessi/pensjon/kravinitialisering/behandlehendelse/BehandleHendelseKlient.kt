@@ -22,6 +22,7 @@ class BehandleHendelseKlient(
 ) {
 
     private val logger = LoggerFactory.getLogger(BehandleHendelseKlient::class.java)
+    private val secureLog = LoggerFactory.getLogger("secureLog")
 
     private lateinit var behandlehendelse: MetricsHelper.Metric
 
@@ -64,7 +65,7 @@ class BehandleHendelseKlient(
                     "/",
                     httpEntity,
                     String::class.java
-                )
+                ).also { """********** Kvittering fra opprettelse av krav mot PEN ************ | PostResponse: ${it.body}""" }
             } catch (ex: HttpStatusCodeException) {
                 logger.error("En feil oppstod under opprettelse av behandlehendlse ex: ", ex)
                 throw RuntimeException("En feil oppstod under opprettelse av behandlehendelse ex: ${ex.message} body: ${ex.responseBodyAsString}")
