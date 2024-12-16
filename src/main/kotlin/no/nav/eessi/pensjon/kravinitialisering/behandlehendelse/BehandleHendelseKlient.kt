@@ -65,7 +65,8 @@ class BehandleHendelseKlient(
                     "/",
                     httpEntity,
                     String::class.java
-                ).also { logger.info("""********** Kvittering fra opprettelse av krav mot PEN ************ | PostResponse: ${it.toJson()}""") }
+                ).also { logger.info("""********** Kvittering fra opprettelse av krav mot PEN ************ 
+                    || PostResponse: ${it.toJson()}""".trimMargin()) }
             } catch (ex: HttpStatusCodeException) {
                 logger.error("En feil oppstod under opprettelse av behandlehendlse ex: ", ex)
                 throw RuntimeException("En feil oppstod under opprettelse av behandlehendelse ex: ${ex.message} body: ${ex.responseBodyAsString}")
