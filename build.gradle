@@ -78,7 +78,7 @@ dependencies {
     implementation("com.google.cloud:google-cloud-storage:2.46.0")
 
     //mock - test
-    testImplementation("org.junit.jupiter:junit-jupiter:5.11.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
 
     testImplementation("org.mock-server:mockserver-netty:5.15.0") {
         exclude module: 'junit'
