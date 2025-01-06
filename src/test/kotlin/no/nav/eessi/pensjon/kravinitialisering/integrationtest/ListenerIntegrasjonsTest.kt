@@ -12,9 +12,8 @@ import no.nav.eessi.pensjon.utils.toJson
 import org.apache.hc.client5.http.impl.classic.HttpClients
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder
 import org.apache.hc.client5.http.io.HttpClientConnectionManager
-import org.apache.hc.client5.http.ssl.NoopHostnameVerifier
-import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory
-import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder
+import org.apache.hc.client5.http.ssl.*
+import org.apache.hc.core5.ssl.SSLContextBuilder
 import org.apache.hc.core5.ssl.SSLContexts
 import org.apache.hc.core5.ssl.TrustStrategy
 import org.junit.jupiter.api.AfterEach
@@ -210,24 +209,24 @@ class ListenerIntegrasjonsTest {
     class TestConfig {
         @Bean
         fun penAzureTokenRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
-            val acceptingTrustStrategy = TrustStrategy { _: Array<X509Certificate?>?, _: String? -> true }
+            val sslContext = SSLContextBuilder.create()
+                .loadTrustMaterial(null) { _, _ -> true } // Trust all certificates
+                .build()
 
-            val sslcontext: SSLContext = SSLContexts.custom()
-                .loadTrustMaterial(null, acceptingTrustStrategy)
-                .build()
-            val sslSocketFactory: SSLConnectionSocketFactory = SSLConnectionSocketFactoryBuilder.create()
-                .setSslContext(sslcontext)
-                .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-                .build()
-            val connectionManager: HttpClientConnectionManager = PoolingHttpClientConnectionManagerBuilder.create()
-                .setSSLSocketFactory(sslSocketFactory)
-                .build()
+            val connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+                .setTlsSocketStrategy(
+                    DefaultClientTlsStrategy(
+                        sslContext,
+                        HostnameVerificationPolicy.CLIENT,
+                        NoopHostnameVerifier.INSTANCE
+                    )
+                ).build()
+
             val httpClient = HttpClients.custom()
                 .setConnectionManager(connectionManager)
                 .build()
 
-            val customRequestFactory = HttpComponentsClientHttpRequestFactory()
-            customRequestFactory.httpClient = httpClient
+            val customRequestFactory = HttpComponentsClientHttpRequestFactory(httpClient)
 
             return RestTemplateBuilder()
                 .rootUri("https://localhost:${System.getProperty("mockServerport")}")
