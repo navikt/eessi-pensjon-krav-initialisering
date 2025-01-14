@@ -67,7 +67,7 @@ dependencies {
     implementation("org.slf4j:jcl-over-slf4j:2.0.16")
 
     //eessi pensjon libs
-    implementation("no.nav.eessi.pensjon:ep-metrics:2.0.94")
+    implementation("no.nav.eessi.pensjon:ep-metrics:2.0.96")
     implementation("no.nav.eessi.pensjon:ep-logging:2.2.2")
     implementation("no.nav.eessi.pensjon:ep-eux:2.4.11") {
         exclude module: 'ep-metrics'
