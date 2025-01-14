@@ -74,7 +74,7 @@ dependencies {
     }
 
     //GCP
-    implementation("com.google.cloud:google-cloud-storage:2.46.0")
+    implementation("com.google.cloud:google-cloud-storage:2.47.0")
 
     //mock - test
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
