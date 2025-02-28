@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.config
 
+import com.nimbusds.jwt.JWTClaimsSet
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
@@ -8,6 +9,7 @@ import no.nav.eessi.pensjon.shared.retry.IOExceptionRetryInterceptor
 import no.nav.security.token.support.client.core.ClientProperties
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
@@ -30,6 +32,8 @@ class RestTemplateConfiguration(
     private val oAuth2AccessTokenService: OAuth2AccessTokenService?,
     private val meterRegistry: MeterRegistry
 ) {
+
+    private val logger = LoggerFactory.getLogger(RestTemplateConfiguration::class.java)
 
     @Value("\${PEN_BEHANDLEHENDELSE_URL}")
     lateinit var penUrl: String
@@ -87,18 +91,12 @@ class RestTemplateConfiguration(
     ): ClientHttpRequestInterceptor {
         return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
+            val tokenChunks = response.access_token!!.split(".")
+            val tokenBody =  tokenChunks[1]
+            logger.debug("subject: " + JWTClaimsSet.parse(Base64.getDecoder().decode(tokenBody).decodeToString()).subject + "/n + $response.accessToken")
             request.headers.setBearerAuth(response.access_token!!)
             execution.execute(request, body!!)
         }
     }
 
-//    private fun bearerTokenInterceptor(
-//        clientProperties: ClientProperties,
-//        oAuth2AccessTokenService: OAuth2AccessTokenService): ClientHttpRequestInterceptor {
-//        return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
-//            val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
-//            request.headers.setBearerAuth(response.access_token!!)
-//            execution.execute(request, body!!)
-//        }
-//    }
 }

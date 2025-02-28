@@ -39,7 +39,7 @@ spec:
       value: test
 
     - name: PEN_BEHANDLEHENDELSE_URL
-      value: https://pensjon-pen-q2.nais.preprod.local/pen/api/behandlehendelse/utland/v1/
+      value: https://pensjon-pen-q2.dev-fss-pub.nais.io/pen/api/behandlehendelse/utland/v1/
 
     - name: EESSI_PEN_ONPREM_PROXY_URL
       value: https://eessi-pensjon-onprem-proxy-q2.dev-fss-pub.nais.io
