@@ -38,30 +38,6 @@ class RestTemplateConfiguration(
     @Value("\${PEN_BEHANDLEHENDELSE_URL}")
     lateinit var penUrl: String
 
-    /**
-     * Create one RestTemplate per OAuth2 client entry to separate between different scopes per API
-     */
-//    @Bean
-//    fun penAzureTokenRestTemplate(
-//        restTemplateBuilder: RestTemplateBuilder,
-//        clientConfigurationProperties: ClientConfigurationProperties,
-//        oAuth2AccessTokenService: OAuth2AccessTokenService
-//    ): RestTemplate? {
-//        val clientProperties = Optional.ofNullable(clientConfigurationProperties.registration["proxy-credentials"])
-//                .orElseThrow { RuntimeException("could not find oauth2 client config for example-onbehalfof") }
-//        return restTemplateBuilder
-//            .rootUri(penUrl)
-//            .additionalInterceptors(
-//                bearerTokenInterceptor(clientProperties, oAuth2AccessTokenService),
-//                RequestIdHeaderInterceptor(),
-//                IOExceptionRetryInterceptor(),
-//                RequestCountInterceptor(meterRegistry),
-//                RequestResponseLoggerInterceptor()
-//            )
-//            .build().apply {
-//                requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
-//            }
-//    }
 
     @Bean
     fun penAzureTokenRestTemplate() : RestTemplate {
