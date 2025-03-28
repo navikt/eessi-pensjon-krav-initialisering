@@ -15,7 +15,7 @@ jobs:
       id-token: write
     steps:
       - name: 'Pull repo'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 'Deploy privat-krav-initialisering-q2 to eessipensjon namespace'
         uses: nais/deploy/actions/deploy@v2
