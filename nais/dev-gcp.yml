@@ -48,6 +48,7 @@ spec:
     - name: KRAV_INITIALISERING_TOPIC
       value: eessipensjon.privat-krav-initialisering-q2
 
+    - name: AZURE_APP_PEN_CLIENT_ID
       value: dev-fss.pensjon-q2.pensjon-pen-q2
 
     - name: ENV
