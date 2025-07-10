@@ -39,6 +39,7 @@ spec:
   env:
     - name: GCP_BUCKET_NAME
       value: eessi-pensjon-kravinit-dev-q2
+
     - name: SPRING_PROFILES_ACTIVE
       value: test
 
@@ -53,8 +54,6 @@ spec:
 
     - name: ENV
       value: q2
-
-
 
   image: {{ image }}
   ingresses:
