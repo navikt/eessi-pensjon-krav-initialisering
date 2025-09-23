@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.kravinitialisering.listener
 
+import no.nav.eessi.pensjon.eux.model.sed.X005
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.behandlehendelse.BehandleHendelseKlient
 import no.nav.eessi.pensjon.kravinitialisering.services.LagringsService
@@ -15,6 +16,8 @@ import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
 import java.util.*
 import java.util.concurrent.CountDownLatch
+
+private const val X_REQUEST_ID = "x_request_id"
 
 @Component
 class Listener(
@@ -47,7 +50,7 @@ class Listener(
         cr: ConsumerRecord<String, String>,
         acknowledgment: Acknowledgment
     ) {
-        MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
+        MDC.putCloseable(X_REQUEST_ID, createUUID(cr)).use {
             logger.info("Melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
             try {
                 logger.debug("Hendelse : ${hendelse.toJson()}")
@@ -74,6 +77,12 @@ class Listener(
             }
             latch.countDown()
         }
+    }
+
+    private fun createUUID(cr: ConsumerRecord<String, String>): String {
+        val key = cr.key() ?: UUID.randomUUID().toString()
+        logger.debug("$X_REQUEST_ID : $key")
+        return key
     }
 }
 
