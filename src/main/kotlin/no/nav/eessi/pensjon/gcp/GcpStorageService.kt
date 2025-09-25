@@ -38,10 +38,6 @@ class GcpStorageService(
         }
     }
 
-    fun hent(storageKey: String): String {
-        return gcpStorage.get(BlobId.of(bucketname, storageKey)).getContent().toString()
-    }
-
     fun eksisterer(storageKey: String): Boolean{
         logger.debug("sjekker om $storageKey finnes i bucket: $bucketname")
         val obj = gcpStorage.get(BlobId.of(bucketname, storageKey))
