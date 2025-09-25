@@ -27,11 +27,10 @@ class Listener(
 ) {
 
     private val logger = LoggerFactory.getLogger(Listener::class.java)
-
     private val latch = CountDownLatch(4)
 
-    private lateinit var opprettKrav: MetricsHelper.Metric
-    private lateinit var opprettKravFinnes: MetricsHelper.Metric
+    private var opprettKrav: MetricsHelper.Metric
+    private var opprettKravFinnes: MetricsHelper.Metric
 
     fun getLatch() = latch
 

@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.kravinitialisering.services
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.HendelseKode
+import no.nav.eessi.pensjon.kravinitialisering.HendelseKode.*
 import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.eessi.pensjon.utils.toJson
 import org.slf4j.LoggerFactory
@@ -28,35 +29,14 @@ class LagringsService (private val gcpStorageService: GcpStorageService) {
 
     fun kanHendelsenOpprettes(hendelseModel: BehandleHendelseModel) : Boolean {
         logger.debug("liste over obj P_BUC_03/" + gcpStorageService.list("P_BUC_03/").toString())
+        logger.debug("liste over obj P_BUC_01/" + gcpStorageService.list("P_BUC_01/").toString())
         return !gcpStorageService.eksisterer(hentPathMedSakId(hendelseModel))
     }
 
-    fun hentHendelse(hendelse: BehandleHendelseModel): BehandleHendelseModel? {
-        val path = hentPathMedSakId(hendelse)
-        logger.info("Henter sakId: ${hendelse.sakId} from $path")
-
-        val objekt = try {
-            gcpStorageService.hent(path)
-
-        } catch (ex: Exception) {
-            logger.error("Feiler ved henting av data : $path", ex)
-            null
-        }
-
-        logger.debug("Henter hendelse fra: $path, data: $objekt")
-        return try {
-            objekt?.let { mapJsonToAny(it)}
-        } catch (ex: Exception) {
-            logger.error("Feilet ved mapping av json", ex)
-            null
-        }
-    }
-
-
     fun hentPathMedSakId(hendelse: BehandleHendelseModel): String {
         val bucType = when (hendelse.hendelsesKode) {
-            HendelseKode.SOKNAD_OM_UFORE -> "P_BUC_03"
-            HendelseKode.SOKNAD_OM_ALDERSPENSJON -> "P_BUC_01"
+            SOKNAD_OM_UFORE -> "P_BUC_03"
+            SOKNAD_OM_ALDERSPENSJON -> "P_BUC_01"
             else -> {
                 val msg = "Ikke gyldig hendelse for path. bucid: ${hendelse.sakId}"
                 throw RuntimeException(msg).also { logger.error(msg) }

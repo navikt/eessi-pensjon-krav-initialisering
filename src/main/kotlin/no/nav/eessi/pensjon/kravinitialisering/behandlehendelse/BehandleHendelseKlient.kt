@@ -24,7 +24,7 @@ class BehandleHendelseKlient(
     private val logger = LoggerFactory.getLogger(BehandleHendelseKlient::class.java)
     private val secureLog = LoggerFactory.getLogger("secureLog")
 
-    private lateinit var behandlehendelse: MetricsHelper.Metric
+    private var behandlehendelse: MetricsHelper.Metric
 
     init {
         behandlehendelse = metricsHelper.init("Behandlehendelse", alert = MetricsHelper.Toggle.OFF)
