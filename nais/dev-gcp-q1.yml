@@ -30,10 +30,6 @@ spec:
   azure:
     application:
       enabled: true
-  accessPolicy:
-    outbound:
-      external:
-        - host: eessi-pensjon-onprem-proxy-q1.dev-fss-pub.nais.io
 
   webproxy: true
   env:
