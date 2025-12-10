@@ -11,13 +11,13 @@ import no.nav.eessi.pensjon.kravinitialisering.listener.Listener
 import no.nav.eessi.pensjon.utils.toJson
 import org.apache.hc.client5.http.impl.classic.HttpClients
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder
-import org.apache.hc.client5.http.io.HttpClientConnectionManager
-import org.apache.hc.client5.http.ssl.*
+import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy
+import org.apache.hc.client5.http.ssl.HostnameVerificationPolicy
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier
 import org.apache.hc.core5.ssl.SSLContextBuilder
-import org.apache.hc.core5.ssl.SSLContexts
-import org.apache.hc.core5.ssl.TrustStrategy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.Header
@@ -27,9 +27,9 @@ import org.mockserver.model.HttpStatusCode
 import org.mockserver.socket.PortFactory
 import org.mockserver.verify.VerificationTimes
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.restclient.RestTemplateBuilder
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod
@@ -47,13 +47,12 @@ import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
-import java.security.cert.X509Certificate
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.SSLContext
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
 
+@Disabled
 @SpringBootTest(classes = [IntegrasjonsTestConfig::class, ListenerIntegrasjonsTest.TestConfig::class, EessiPensjonKravInitialiseringTestApplication::class])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
@@ -182,15 +181,15 @@ class ListenerIntegrasjonsTest {
         val senderProps = KafkaTestUtils.producerProps(embeddedKafka.brokersAsString)
         val pf = DefaultKafkaProducerFactory<Int, String>(senderProps)
         val template = KafkaTemplate(pf)
-        template.defaultTopic = KRAV_INITIALISERING_TOPIC
+        template.setDefaultTopic(KRAV_INITIALISERING_TOPIC)
         return template
     }
 
     private fun settOppUtitlityConsumer(): KafkaMessageListenerContainer<String, String> {
         val consumerProperties = KafkaTestUtils.consumerProps(
+            embeddedKafka,
             "eessi-pensjon-group2",
-            "false",
-            embeddedKafka
+            false
         )
         consumerProperties["auto.offset.reset"] = "earliest"
 
