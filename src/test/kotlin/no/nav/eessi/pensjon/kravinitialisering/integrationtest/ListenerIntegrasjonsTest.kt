@@ -1,7 +1,6 @@
 package no.nav.eessi.pensjon.kravinitialisering.integrationtest
 
 import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.MockkBeans
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.EessiPensjonKravInitialiseringTestApplication
@@ -60,10 +59,11 @@ private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering
     controlledShutdown = true,
     topics = [KRAV_INITIALISERING_TOPIC]
 )
-@MockkBeans(
-    MockkBean(name = "personService", classes = [GcpStorageService::class], relaxed = true)
-)
+
 class ListenerIntegrasjonsTest {
+
+    @MockkBean(relaxed = true)
+    lateinit var gcpStorageService: GcpStorageService
 
     @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
