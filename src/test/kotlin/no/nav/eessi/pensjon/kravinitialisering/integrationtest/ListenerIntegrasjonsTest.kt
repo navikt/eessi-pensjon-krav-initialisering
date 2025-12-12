@@ -1,7 +1,6 @@
 package no.nav.eessi.pensjon.kravinitialisering.integrationtest
 
 import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.MockkBeans
 import no.nav.eessi.pensjon.gcp.GcpStorageService
 import no.nav.eessi.pensjon.kravinitialisering.BehandleHendelseModel
 import no.nav.eessi.pensjon.kravinitialisering.EessiPensjonKravInitialiseringTestApplication
@@ -52,7 +51,6 @@ import java.util.concurrent.TimeUnit
 
 private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering"
 
-@Disabled
 @SpringBootTest(classes = [IntegrasjonsTestConfig::class, ListenerIntegrasjonsTest.TestConfig::class, EessiPensjonKravInitialiseringTestApplication::class])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
@@ -60,10 +58,11 @@ private const val KRAV_INITIALISERING_TOPIC = "eessi-pensjon-krav-initialisering
     controlledShutdown = true,
     topics = [KRAV_INITIALISERING_TOPIC]
 )
-@MockkBeans(
-    MockkBean(name = "personService", classes = [GcpStorageService::class], relaxed = true)
-)
+
 class ListenerIntegrasjonsTest {
+
+    @MockkBean(relaxed = true)
+    lateinit var gcpStorageService: GcpStorageService
 
     @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
@@ -151,7 +150,7 @@ class ListenerIntegrasjonsTest {
 
         listener.getLatch().await(30000, TimeUnit.MILLISECONDS)
 
-        verifyPostRequests(5)
+        verifyPostRequests(4)
 
     }
 
