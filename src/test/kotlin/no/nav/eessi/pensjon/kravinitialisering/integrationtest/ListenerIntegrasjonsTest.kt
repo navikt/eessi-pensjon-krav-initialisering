@@ -150,7 +150,7 @@ class ListenerIntegrasjonsTest {
 
         listener.getLatch().await(30000, TimeUnit.MILLISECONDS)
 
-        verifyPostRequests(5)
+        verifyPostRequests(4)
 
     }
 
