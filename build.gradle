@@ -64,9 +64,6 @@ dependencies {
     implementation("no.nav.security:token-validation-spring:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
 
-    //nødvendig for validering av jwt og EnableJwtTokenValidationConfiguration
-    implementation("org.hibernate.validator:hibernate-validator:9.0.1.Final")
-
     // Logging
     implementation("net.logstash.logback:logstash-logback-encoder:9.0")
     configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
