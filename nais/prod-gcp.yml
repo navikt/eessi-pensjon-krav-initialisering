@@ -32,6 +32,9 @@ spec:
     application:
       enabled: true
   accessPolicy:
+    rules:
+      - application: logging
+        namespace: nais-system
     outbound:
       external:
         - host: pensjon-pen.prod-fss-pub.nais.io
