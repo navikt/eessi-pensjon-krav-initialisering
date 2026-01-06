@@ -30,6 +30,7 @@
         <logger name="secureLog" level="DEBUG" additivity="false">
             <appender-ref ref="secureLog"/>
         </logger>
+
         <logger name="no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor" level="OFF" additivity="false">
             <appender-ref ref="secureLog"/>
         </logger>
