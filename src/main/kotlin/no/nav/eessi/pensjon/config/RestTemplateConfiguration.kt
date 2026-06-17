@@ -42,7 +42,7 @@ class RestTemplateConfiguration(
     @Bean
     fun penAzureTokenRestTemplate() : RestTemplate {
         return RestTemplateBuilder()
-            .rootUri(penUrl)
+            .baseUri(penUrl)
             .errorHandler(DefaultResponseErrorHandler())
             .additionalInterceptors(
                 RequestIdHeaderInterceptor(),

@@ -228,7 +228,7 @@ class ListenerIntegrasjonsTest {
             val customRequestFactory = HttpComponentsClientHttpRequestFactory(httpClient)
 
             return RestTemplateBuilder()
-                .rootUri("https://localhost:${System.getProperty("mockServerport")}")
+                .baseUri("https://localhost:${System.getProperty("mockServerport")}")
                 .build().apply {
                     requestFactory = customRequestFactory
                 }
