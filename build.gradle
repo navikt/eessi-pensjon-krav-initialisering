@@ -82,7 +82,7 @@ dependencies {
     }
 
     //GCP
-    implementation("com.google.cloud:google-cloud-storage:2.71.0")
+    implementation("com.google.cloud:google-cloud-storage:2.72.0")
 
     //mock - test
     testImplementation("org.junit.jupiter:junit-jupiter:6.1.3")
