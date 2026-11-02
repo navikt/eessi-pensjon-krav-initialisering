@@ -6,7 +6,7 @@ Opprette krav-initialisering
 
 # Utvikling
 
-Kjør med java 11.05 minimum
+Bruk Java 25.
 
 ## Komme i gang
 
