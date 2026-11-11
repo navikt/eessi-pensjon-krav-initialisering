@@ -87,7 +87,7 @@ dependencies {
     //mock - test
     testImplementation("org.junit.jupiter:junit-jupiter:6.1.3")
 
-    testImplementation("org.mock-server:mockserver-netty:8.0.0") {
+    testImplementation("org.mock-server:mockserver-netty:9.2.0") {
         exclude module: 'junit'
     }
     testImplementation("io.mockk:mockk:1.14.12")
